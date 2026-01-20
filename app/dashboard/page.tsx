@@ -170,10 +170,6 @@ export default function Dashboard() {
                 </div>
                 <div className="space-y-2">
                   <p className="text-3xl font-bold text-slate-100">{stat.value}</p>
-                  <div className="flex items-center gap-1">
-                    <TrendingUp className="w-4 h-4 text-green-400" />
-                    <span className="text-xs text-green-400 font-medium">{stat.trend} from last month</span>
-                  </div>
                 </div>
               </div>
               {/* Animated background */}
