@@ -8,12 +8,13 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const isLandingPage = pathname === '/';
 
   useEffect(() => {
-    if (!loading && !user && pathname !== '/login') {
+    if (!loading && !user && pathname !== '/login' && !isLandingPage) {
       router.push('/login');
     }
-  }, [user, loading, router, pathname]);
+  }, [user, loading, router, pathname, isLandingPage]);
 
   if (loading) {
     return (
@@ -26,7 +27,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
     );
   }
 
-  if (!user && pathname !== '/login') {
+  if (!user && pathname !== '/login' && !isLandingPage) {
     return null;
   }
 

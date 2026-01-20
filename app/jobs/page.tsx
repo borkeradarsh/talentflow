@@ -43,43 +43,73 @@ export default function JobsPage() {
     job.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const statusCounts = {
+    all: jobs.length,
+    open: jobs.filter(j => j.status === 'open').length,
+    closed: jobs.filter(j => j.status === 'closed').length,
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start mb-8 animate-slideInLeft">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Jobs</h1>
-          <p className="text-gray-600 mt-1">Manage all your job postings</p>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Jobs</h1>
+          <p className="text-slate-400 mt-2">Manage all your job postings</p>
         </div>
         <Link href="/jobs/new">
-          <Button>
+          <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
             <Plus className="w-4 h-4 mr-2" />
             Post New Job
           </Button>
         </Link>
       </div>
 
+      {/* Stats Overview */}
+      <div className="grid grid-cols-3 gap-4">
+        {Object.entries(statusCounts).map(([status, count], idx) => (
+          <div
+            key={status}
+            className="cursor-pointer animate-slideInUp"
+            style={{ animationDelay: `${idx * 50}ms` }}
+            onClick={() => setFilter(status as 'all' | 'open' | 'closed')}
+          >
+            <Card
+              className={`group transition-all duration-300 ${
+                filter === status ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/20' : ''
+              }`}
+            >
+              <div className="text-center">
+                <p className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">{count}</p>
+                <p className="text-sm text-slate-400 capitalize mt-2 group-hover:text-slate-300 transition-colors">{status}</p>
+              </div>
+            </Card>
+          </div>
+        ))}
+      </div>
+
       {/* Filters */}
       <Card>
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               placeholder="Search jobs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-700/50 border border-slate-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500 transition-all hover:border-slate-500"
             />
           </div>
 
           {/* Status Filter */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button
               variant={filter === 'all' ? 'primary' : 'ghost'}
               size="sm"
               onClick={() => setFilter('all')}
+              className="transition-all"
             >
               All
             </Button>
@@ -103,20 +133,23 @@ export default function JobsPage() {
 
       {/* Jobs List */}
       {loading ? (
-        <div className="flex items-center justify-center py-12">
+        <div className="flex items-center justify-center py-16">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading jobs...</p>
+            <div className="relative w-12 h-12 mx-auto mb-4">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-spin"></div>
+              <div className="absolute inset-2 bg-slate-800 rounded-full"></div>
+            </div>
+            <p className="text-slate-300">Loading jobs...</p>
           </div>
         </div>
       ) : filteredJobs.length === 0 ? (
         <Card>
-          <div className="text-center py-12">
-            <Briefcase className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
-            <p className="text-gray-600 mb-6">Get started by posting your first job</p>
+          <div className="text-center py-16">
+            <Briefcase className="w-16 h-16 mx-auto text-slate-600 mb-4" />
+            <h3 className="text-lg font-medium text-slate-300 mb-2">No jobs found</h3>
+            <p className="text-slate-400 mb-6">Get started by posting your first job</p>
             <Link href="/jobs/new">
-              <Button>
+              <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
                 <Plus className="w-5 h-5 mr-2" />
                 Post New Job
               </Button>
@@ -124,18 +157,22 @@ export default function JobsPage() {
           </div>
         </Card>
       ) : (
-        <div className="grid gap-6">
-          {filteredJobs.map((job) => (
-            <Card key={job.id} className="hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-xl font-semibold text-gray-900">{job.title}</h3>
-                    <Badge status={job.status} />
+        <div className="space-y-4">
+          {filteredJobs.map((job, idx) => (
+            <Card 
+              key={job.id} 
+              className="group hover:border-blue-400/50 transition-all duration-300 animate-slideInUp"
+              style={{ animationDelay: `${idx * 50}ms` }}
+            >
+              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-2 flex-wrap">
+                    <h3 className="text-xl font-semibold text-slate-100 group-hover:text-blue-300 transition-colors">{job.title}</h3>
+                    <Badge status={job.status as 'open' | 'closed'} />
                   </div>
-                  <p className="text-gray-600 mb-4 line-clamp-2">{job.description}</p>
+                  <p className="text-slate-300 mb-4 line-clamp-2 group-hover:text-slate-200 transition-colors">{job.description}</p>
                   
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                  <div className="flex flex-wrap gap-4 text-sm text-slate-400 group-hover:text-slate-300 transition-colors">
                     {job.required_skills && (
                       <div className="flex items-center gap-2">
                         <span className="font-medium">Skills:</span>
@@ -155,9 +192,9 @@ export default function JobsPage() {
                   </div>
                 </div>
                 
-                <div className="flex gap-2 ml-4">
+                <div className="flex gap-2 lg:ml-4 shrink-0">
                   <Link href={`/jobs/${job.id}`}>
-                    <Button variant="ghost" size="sm">View Details</Button>
+                    <Button variant="ghost" size="sm" className="text-slate-300 hover:text-blue-300">View Details</Button>
                   </Link>
                 </div>
               </div>
@@ -165,6 +202,56 @@ export default function JobsPage() {
           ))}
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-slideInUp {
+          animation: slideInUp 0.5s ease-out;
+          opacity: 1;
+        }
+
+        .animate-slideInLeft {
+          animation: slideInLeft 0.6s ease-out;
+          opacity: 1;
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.6s ease-out;
+          opacity: 1;
+        }
+      `}</style>
     </div>
   );
 }
