@@ -55,7 +55,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
       {/* Background animated elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -93,7 +93,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-8 animate-fadeIn">
               <div>
-                <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                   Hire Smarter, Faster, Better
                 </h1>
                 <p className="text-xl text-slate-300 leading-relaxed">
@@ -158,7 +158,7 @@ export default function LandingPage() {
             { value: '24h', label: 'Avg First Match' }
           ].map((stat, i) => (
             <div key={i} className="text-center animate-fadeIn" style={{ animationDelay: `${i * 100}ms` }}>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <div className="text-3xl md:text-4xl font-bold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 {stat.value}
               </div>
               <div className="text-slate-400 mt-2">{stat.label}</div>
@@ -186,7 +186,7 @@ export default function LandingPage() {
                   className="group relative p-6 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 animate-fadeIn"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-linear-to-br from-blue-500 to-purple-500 rounded-lg opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                   <div className="relative">
                     <Icon className="w-10 h-10 text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
                     <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
@@ -213,14 +213,14 @@ export default function LandingPage() {
             {steps.map((step, index) => (
               <div key={index} className="relative animate-fadeIn" style={{ animationDelay: `${index * 150}ms` }}>
                 <div className="flex flex-col items-center">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-xl font-bold mb-4 hover:scale-110 transition-transform">
+                  <div className="w-14 h-14 rounded-full bg-linear-to-br from-blue-400 to-purple-400 flex items-center justify-center text-xl font-bold mb-4 hover:scale-110 transition-transform">
                     {step.number}
                   </div>
                   <h3 className="text-xl font-semibold text-center mb-2">{step.title}</h3>
                   <p className="text-slate-400 text-center text-sm">{step.description}</p>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-7 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-blue-400/50 to-transparent"></div>
+                  <div className="hidden md:block absolute top-7 left-[60%] w-[80%] h-0.5 bg-linear-to-r from-blue-400/50 to-transparent"></div>
                 )}
               </div>
             ))}

@@ -5,7 +5,7 @@ import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase';
-import { FileText, Search, Filter } from 'lucide-react';
+import { FileText, Search, Filter, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 
 type StatusFilter = 'all' | 'applied' | 'shortlisted' | 'interview' | 'rejected' | 'hired';
@@ -13,8 +13,10 @@ type StatusFilter = 'all' | 'applied' | 'shortlisted' | 'interview' | 'rejected'
 interface Application {
   id: string;
   candidate_id: string;
+  job_id: string;
   status: string;
   applied_at: string;
+  ai_score?: number;
   candidates?: {
     full_name?: string;
     email?: string;
@@ -32,6 +34,40 @@ export default function ApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<StatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortByScore, setSortByScore] = useState(false);
+  const [scoringApplications, setScoringApplications] = useState<Set<string>>(new Set());
+
+  const scoreApplication = async (applicationId: string) => {
+    setScoringApplications(prev => new Set([...prev, applicationId]));
+    try {
+      const response = await fetch('/api/score-application', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicationId })
+      });
+      
+      if (response.ok) {
+        const { score } = await response.json();
+        // Update local state
+        setApplications(prev => prev.map(app => 
+          app.id === applicationId ? { ...app, ai_score: score } : app
+        ));
+      } else {
+        const error = await response.json();
+        console.error('Failed to score application:', error);
+        alert(`Failed to score: ${error.details || error.error}`);
+      }
+    } catch (error) {
+      console.error('Error scoring application:', error);
+      alert('Network error while scoring application');
+    } finally {
+      setScoringApplications(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(applicationId);
+        return newSet;
+      });
+    }
+  };
 
   const fetchApplications = useCallback(async () => {
     setLoading(true);
@@ -68,6 +104,11 @@ export default function ApplicationsPage() {
     app.jobs?.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Sort by AI score if enabled
+  const sortedApplications = sortByScore 
+    ? [...filteredApplications].sort((a, b) => (b.ai_score || 0) - (a.ai_score || 0))
+    : filteredApplications;
+
   const statusCounts = {
     all: applications.length,
     applied: applications.filter(a => a.status === 'applied').length,
@@ -82,13 +123,13 @@ export default function ApplicationsPage() {
       {/* Page Header */}
       <div className="flex justify-between items-start mb-8">
         <div className="animate-slideInLeft">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Applications</h1>
-          <p className="text-slate-400 mt-2">Track and manage candidate applications</p>
+          <h1 className="text-4xl font-bold text-white">Applications</h1>
+          <p className="text-gray-400 mt-2">Track and manage candidate applications</p>
         </div>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         {Object.entries(statusCounts).map(([status, count], idx) => (
           <div
             key={status}
@@ -98,12 +139,12 @@ export default function ApplicationsPage() {
           >
             <Card
               className={`group transition-all duration-300 ${
-                filter === status ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/20' : ''
+                filter === status ? 'ring-2 ring-[#FF7F00] shadow-lg shadow-orange-900/30' : ''
               }`}
             >
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">{count}</p>
-                <p className="text-sm text-slate-400 capitalize mt-2 group-hover:text-slate-300 transition-colors">{status}</p>
+                <p className="text-3xl font-bold text-white">{count}</p>
+                <p className="text-sm text-gray-400 capitalize mt-2 group-hover:text-gray-300 transition-colors">{status}</p>
               </div>
             </Card>
           </div>
@@ -115,13 +156,13 @@ export default function ApplicationsPage() {
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
               type="text"
               placeholder="Search by candidate name or job title..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-700/50 border border-slate-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500 transition-all hover:border-slate-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#1a1a1a] border border-[#262626] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF7F00] placeholder:text-gray-600 transition-all hover:border-[#404040]"
             />
           </div>
 
@@ -160,23 +201,44 @@ export default function ApplicationsPage() {
         </div>
       </Card>
 
+      {/* Score Sort Toggle */}
+      <Card>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-400">Sort by AI Score:</span>
+            <Button
+              size="sm"
+              variant={sortByScore ? 'default' : 'ghost'}
+              onClick={() => setSortByScore(!sortByScore)}
+              className="flex items-center gap-2"
+            >
+              <TrendingUp className="w-4 h-4" />
+              {sortByScore ? 'Enabled' : 'Disabled'}
+            </Button>
+          </div>
+          <p className="text-xs text-gray-500">
+            {sortedApplications.filter(a => a.ai_score).length} of {sortedApplications.length} scored
+          </p>
+        </div>
+      </Card>
+
       {/* Applications List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
             <div className="relative w-12 h-12 mx-auto mb-4">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-2 bg-slate-800 rounded-full"></div>
+              <div className="absolute inset-0 bg-[#FF7F00] rounded-full animate-spin"></div>
+              <div className="absolute inset-2 bg-[#0a0a0a] rounded-full"></div>
             </div>
-            <p className="text-slate-300">Loading applications...</p>
+            <p className="text-gray-300">Loading applications...</p>
           </div>
         </div>
-      ) : filteredApplications.length === 0 ? (
+      ) : sortedApplications.length === 0 ? (
         <Card>
           <div className="text-center py-16">
-            <FileText className="w-16 h-16 mx-auto text-slate-600 mb-4" />
-            <h3 className="text-lg font-medium text-slate-300 mb-2">No applications found</h3>
-            <p className="text-slate-400">
+            <FileText className="w-16 h-16 mx-auto text-gray-700 mb-4" />
+            <h3 className="text-lg font-medium text-gray-300 mb-2">No applications found</h3>
+            <p className="text-gray-400">
               {filter === 'all'
                 ? 'Applications will appear here as candidates apply'
                 : `No applications with status "${filter}"`}
@@ -185,32 +247,48 @@ export default function ApplicationsPage() {
         </Card>
       ) : (
         <div className="space-y-4">
-          {filteredApplications.map((app, idx) => (
+          {sortedApplications.map((app, idx) => (
             <Card 
               key={app.id} 
-              className="group hover:border-blue-400/50 transition-all duration-300 animate-slideInUp"
+              className="group hover:border-[#FF7F00]/50 transition-all duration-300 animate-slideInUp"
               style={{ animationDelay: `${idx * 50}ms` }}
             >
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                 <div className="flex items-start lg:items-center gap-4 flex-1 min-w-0">
                   {/* Avatar */}
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 bg-[#FF7F00] rounded-full flex items-center justify-center text-white font-semibold shrink-0 group-hover:scale-110 transition-transform shadow-lg shadow-orange-900/30">
                     {app.candidates?.full_name?.charAt(0) || 'C'}
                   </div>
 
                   {/* Candidate Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1 flex-wrap">
-                      <h3 className="text-lg font-semibold text-slate-100">
+                      <h3 className="text-lg font-semibold text-white">
                         {app.candidates?.full_name || 'Unknown Candidate'}
                       </h3>
                       <Badge status={app.status as 'applied' | 'shortlisted' | 'interview' | 'rejected' | 'hired'} />
+                      {app.ai_score ? (
+                        <span className="px-2.5 py-1 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 text-yellow-200 rounded-lg text-xs font-semibold border border-yellow-500/20">
+                          ⭐ {app.ai_score}%
+                        </span>
+                      ) : !scoringApplications.has(app.id) ? (
+                        <button
+                          onClick={() => scoreApplication(app.id)}
+                          className="px-2.5 py-1 bg-[#1a1a1a] hover:bg-[#262626] text-gray-400 hover:text-[#FF7F00] rounded-lg text-xs font-medium border border-[#262626] hover:border-[#FF7F00]/50 transition-all"
+                        >
+                          Calculate Score
+                        </button>
+                      ) : (
+                        <span className="px-2.5 py-1 bg-[#1a1a1a] text-gray-500 rounded-lg text-xs">
+                          Scoring...
+                        </span>
+                      )}
                     </div>
-                    <p className="text-sm text-slate-400 mb-2">
-                      Applied for: <span className="font-medium text-slate-200">{app.jobs?.title || 'Unknown Position'}</span>
+                    <p className="text-sm text-gray-400 mb-2">
+                      Applied for: <span className="font-medium text-gray-200">{app.jobs?.title || 'Unknown Position'}</span>
                     </p>
                     
-                    <div className="flex flex-wrap gap-4 text-sm text-slate-400">
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-400">
                       {app.candidates?.email && (
                         <span>{app.candidates.email}</span>
                       )}
@@ -225,7 +303,7 @@ export default function ApplicationsPage() {
                         {app.candidates.skills.split(',').slice(0, 4).map((skill: string, idx: number) => (
                           <span
                             key={idx}
-                            className="px-2.5 py-0.5 bg-slate-700/50 text-slate-300 rounded-lg text-xs border border-slate-600 hover:border-blue-500/50 transition-colors"
+                            className="px-2.5 py-0.5 bg-[#1a1a1a] text-gray-300 rounded-lg text-xs border border-[#262626] hover:border-[#FF7F00]/50 transition-colors"
                           >
                             {skill.trim()}
                           </span>
@@ -238,7 +316,7 @@ export default function ApplicationsPage() {
                 {/* Actions */}
                 <div className="flex gap-2 ml-auto lg:ml-4">
                   <Link href={`/candidates/${app.candidate_id}`}>
-                    <Button variant="ghost" size="sm" className="text-slate-300 hover:text-blue-300">View Profile</Button>
+                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">View Profile</Button>
                   </Link>
                   <Link href={`/applications/${app.id}`}>
                     <Button size="sm">Review</Button>

@@ -30,27 +30,25 @@ export default function LoginPage() {
       if (error) throw error;
 
       if (data.user) {
-        // Ensure user record exists in users table
-        const { data: existingUser } = await supabase
+        // Get user role from database
+        const { data: userData, error: userError } = await supabase
           .from('users')
-          .select('id')
+          .select('role')
           .eq('id', data.user.id)
           .single();
 
-        if (!existingUser) {
-          // Create user record if it doesn't exist
-          await supabase.from('users').insert([
-            {
-              id: data.user.id,
-              email: data.user.email,
-              name: data.user.user_metadata?.name || 'User',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            }
-          ]);
+        if (userError) {
+          console.error('Error fetching user role:', userError);
+          setError('Failed to fetch user information');
+          return;
         }
 
-        router.push('/dashboard');
+        // Route based on user role
+        if (userData?.role === 'candidate') {
+          router.push('/candidate/profile');
+        } else {
+          router.push('/dashboard');
+        }
         router.refresh();
       }
     } catch (error: any) {
@@ -67,7 +65,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-center p-4 overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-center p-4 overflow-hidden">
       {/* Background animated elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -84,7 +82,7 @@ export default function LoginPage() {
 
         {/* Logo and Title */}
         <div className="text-center mb-8 animate-fadeIn">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-blue-400 to-purple-400 rounded-2xl mb-4">
             <Brain className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
@@ -93,7 +91,7 @@ export default function LoginPage() {
 
         {/* Login Form */}
         <div className="relative bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl hover:border-blue-500/50 transition-all duration-300 animate-fadeIn">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-blue-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
           
           <div className="relative">
             {error && (

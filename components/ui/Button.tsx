@@ -2,7 +2,7 @@ import { ReactNode, ButtonHTMLAttributes } from 'react';
 import { clsx } from 'clsx';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'bhavesh';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   children: ReactNode;
 }
@@ -14,14 +14,14 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'font-medium rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white',
-    secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',
-    danger: 'bg-red-600 hover:bg-red-700 text-white',
-    ghost: 'hover:bg-gray-100 text-gray-700',
-    bhavesh: 'text-white hover:text-gray-200'
+    primary: 'bg-[#FF7F00] hover:bg-[#e67300] text-white shadow-lg shadow-orange-900/30 hover:shadow-orange-900/50',
+    secondary: 'bg-[#1a1a1a] hover:bg-[#262626] text-white border border-[#404040]',
+    danger: 'bg-red-700 hover:bg-red-800 text-white',
+    ghost: 'hover:bg-[#1a1a1a] text-gray-400 hover:text-white',
+    outline: 'border border-[#262626] bg-transparent hover:bg-[#1a1a1a] text-gray-300 hover:text-white'
   };
   
   const sizes = {

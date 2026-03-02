@@ -54,11 +54,11 @@ export default function JobsPage() {
       {/* Page Header */}
       <div className="flex justify-between items-start mb-8 animate-slideInLeft">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Jobs</h1>
-          <p className="text-slate-400 mt-2">Manage all your job postings</p>
+          <h1 className="text-4xl font-bold text-white">Jobs</h1>
+          <p className="text-gray-400 mt-2">Manage all your job postings</p>
         </div>
         <Link href="/jobs/new">
-          <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+          <Button>
             <Plus className="w-4 h-4 mr-2" />
             Post New Job
           </Button>
@@ -76,12 +76,12 @@ export default function JobsPage() {
           >
             <Card
               className={`group transition-all duration-300 ${
-                filter === status ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/20' : ''
+                filter === status ? 'ring-2 ring-[#FF7F00] shadow-lg shadow-orange-900/30' : ''
               }`}
             >
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">{count}</p>
-                <p className="text-sm text-slate-400 capitalize mt-2 group-hover:text-slate-300 transition-colors">{status}</p>
+                <p className="text-3xl font-bold text-white">{count}</p>
+                <p className="text-sm text-gray-400 capitalize mt-2 group-hover:text-gray-300 transition-colors">{status}</p>
               </div>
             </Card>
           </div>
@@ -99,7 +99,7 @@ export default function JobsPage() {
               placeholder="Search jobs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-700/50 border border-slate-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500 transition-all hover:border-slate-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#1a1a1a] border border-[#262626] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF7F00] placeholder:text-gray-600 transition-all hover:border-[#404040]"
             />
           </div>
 
@@ -136,20 +136,20 @@ export default function JobsPage() {
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
             <div className="relative w-12 h-12 mx-auto mb-4">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-2 bg-slate-800 rounded-full"></div>
+              <div className="absolute inset-0 bg-[#FF7F00] rounded-full animate-spin"></div>
+              <div className="absolute inset-2 bg-[#0a0a0a] rounded-full"></div>
             </div>
-            <p className="text-slate-300">Loading jobs...</p>
+            <p className="text-gray-300">Loading jobs...</p>
           </div>
         </div>
       ) : filteredJobs.length === 0 ? (
         <Card>
           <div className="text-center py-16">
-            <Briefcase className="w-16 h-16 mx-auto text-slate-600 mb-4" />
-            <h3 className="text-lg font-medium text-slate-300 mb-2">No jobs found</h3>
-            <p className="text-slate-400 mb-6">Get started by posting your first job</p>
+            <Briefcase className="w-16 h-16 mx-auto text-gray-700 mb-4" />
+            <h3 className="text-lg font-medium text-gray-300 mb-2">No jobs found</h3>
+            <p className="text-gray-400 mb-6">Get started by posting your first job</p>
             <Link href="/jobs/new">
-              <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+              <Button>
                 <Plus className="w-5 h-5 mr-2" />
                 Post New Job
               </Button>
@@ -161,18 +161,18 @@ export default function JobsPage() {
           {filteredJobs.map((job, idx) => (
             <Card 
               key={job.id} 
-              className="group hover:border-blue-400/50 transition-all duration-300 animate-slideInUp"
+              className="group hover:border-[#FF7F00]/50 transition-all duration-300 animate-slideInUp"
               style={{ animationDelay: `${idx * 50}ms` }}
             >
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2 flex-wrap">
-                    <h3 className="text-xl font-semibold text-slate-100 group-hover:text-blue-300 transition-colors">{job.title}</h3>
+                    <h3 className="text-xl font-semibold text-white group-hover:text-[#FF7F00] transition-colors">{job.title}</h3>
                     <Badge status={job.status as 'open' | 'closed'} />
                   </div>
-                  <p className="text-slate-300 mb-4 line-clamp-2 group-hover:text-slate-200 transition-colors">{job.description}</p>
+                  <p className="text-gray-300 mb-4 line-clamp-2 group-hover:text-gray-200 transition-colors">{job.description}</p>
                   
-                  <div className="flex flex-wrap gap-4 text-sm text-slate-400 group-hover:text-slate-300 transition-colors">
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
                     {job.required_skills && (
                       <div className="flex items-center gap-2">
                         <span className="font-medium">Skills:</span>
@@ -194,7 +194,7 @@ export default function JobsPage() {
                 
                 <div className="flex gap-2 lg:ml-4 shrink-0">
                   <Link href={`/jobs/${job.id}`}>
-                    <Button variant="ghost" size="sm" className="text-slate-300 hover:text-blue-300">View Details</Button>
+                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">View Details</Button>
                   </Link>
                 </div>
               </div>

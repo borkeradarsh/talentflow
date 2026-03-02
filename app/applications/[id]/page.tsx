@@ -159,20 +159,20 @@ export default function ApplicationDetailPage() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-background rounded-lg">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Education</p>
-                <p className="font-medium text-gray-900">{candidate.education || 'Not specified'}</p>
+                <p className="text-sm text-[#FF7F00] mb-1">Education</p>
+                <p className="font-medium">{candidate.education || 'Not specified'}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Experience</p>
-                <p className="font-medium text-gray-900">
+                <p className="text-sm text-[#FF7F00] mb-1">Experience</p>
+                <p className="font-medium">
                   {candidate.experience_years !== null ? `${candidate.experience_years} years` : 'Not specified'}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600 mb-1">Applied On</p>
-                <p className="font-medium text-gray-900">
+                <p className="text-sm text-[#FF7F00] mb-1">Applied On</p>
+                <p className="font-medium">
                   {new Date(application.applied_at).toLocaleDateString()}
                 </p>
               </div>
@@ -203,7 +203,7 @@ export default function ApplicationDetailPage() {
             {candidate.skills.split(',').map((skill: string, idx: number) => (
               <span
                 key={idx}
-                className="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium"
+                className="px-3 py-1.5 bg-background rounded-lg text-sm font-medium"
               >
                 {skill.trim()}
               </span>
@@ -216,19 +216,19 @@ export default function ApplicationDetailPage() {
       <Card title="Job Details">
         <div className="space-y-3">
           <div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-1">{job.title}</h3>
+            <h3 className="text-xl text-[#FF7F00] font-semibold mb-1">{job.title}</h3>
             <Badge status={job.status} />
           </div>
-          <p className="text-gray-700 whitespace-pre-wrap">{job.description}</p>
+          <p className="whitespace-pre-wrap">{job.description}</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-background rounded-lg mt-4">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Required Skills</p>
-              <p className="font-medium text-gray-900">{job.required_skills || 'Not specified'}</p>
+              <p className="text-sm mb-1">Required Skills</p>
+              <p className="font-medium ">{job.required_skills || 'Not specified'}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600 mb-1">Minimum Experience</p>
-              <p className="font-medium text-gray-900">{job.min_experience}+ years</p>
+              <p className="text-sm  mb-1">Minimum Experience</p>
+              <p className="font-medium ">{job.min_experience}+ years</p>
             </div>
           </div>
         </div>

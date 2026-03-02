@@ -10,7 +10,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'recruiter';
+  role: 'admin' | 'recruiter' | 'candidate';
   created_at: string;
 };
 
@@ -34,6 +34,7 @@ export type Candidate = {
   experience_years: number;
   skills: string;
   resume_url: string;
+  resume_score?: number;
   created_at: string;
 };
 
@@ -42,6 +43,7 @@ export type Application = {
   candidate_id: string;
   job_id: string;
   status: 'applied' | 'shortlisted' | 'interview' | 'rejected' | 'hired';
+  ai_score?: number;
   applied_at: string;
 };
 

@@ -70,11 +70,11 @@ export default function InterviewsPage() {
       {/* Page Header */}
       <div className="flex justify-between items-start mb-8 animate-slideInLeft">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Interviews</h1>
+          <h1 className="text-4xl font-bold bg-linear-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Interviews</h1>
           <p className="text-slate-400 mt-2">Manage and schedule candidate interviews</p>
         </div>
         <Link href="/interviews/new">
-          <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+          <Button className="bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
             <Plus className="w-5 h-5 mr-2" />
             Schedule Interview
           </Button>
@@ -96,7 +96,7 @@ export default function InterviewsPage() {
               }`}
             >
               <div className="text-center">
-                <p className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">{count}</p>
+                <p className="text-3xl font-bold bg-linear-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">{count}</p>
                 <p className="text-sm text-slate-400 capitalize mt-2 group-hover:text-slate-300 transition-colors">{status}</p>
               </div>
             </Card>
@@ -157,7 +157,7 @@ export default function InterviewsPage() {
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
             <div className="relative w-12 h-12 mx-auto mb-4">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 bg-linear-to-r from-blue-500 to-purple-500 rounded-full animate-spin"></div>
               <div className="absolute inset-2 bg-slate-800 rounded-full"></div>
             </div>
             <p className="text-slate-300">Loading interviews...</p>
@@ -170,7 +170,7 @@ export default function InterviewsPage() {
             <h3 className="text-lg font-medium text-slate-300 mb-2">No interviews found</h3>
             <p className="text-slate-400 mb-6">Schedule your first interview to get started</p>
             <Link href="/interviews/new">
-              <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+              <Button className="bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
                 <Plus className="w-5 h-5 mr-2" />
                 Schedule Interview
               </Button>
@@ -182,7 +182,7 @@ export default function InterviewsPage() {
           {/* Upcoming Interviews */}
           {upcomingInterviews.length > 0 && (
             <div className="animate-slideInUp">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent mb-4">Upcoming Interviews</h2>
+              <h2 className="text-2xl font-bold bg-linear-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent mb-4">Upcoming Interviews</h2>
               <div className="space-y-4">
                 {upcomingInterviews.map((interview, idx) => (
                   <Card 
@@ -192,7 +192,7 @@ export default function InterviewsPage() {
                   >
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                       <div className="flex items-start lg:items-center gap-4 flex-1 min-w-0">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold shrink-0 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-linear-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold shrink-0 group-hover:scale-110 transition-transform">
                           {interview.candidates?.full_name?.charAt(0) || 'C'}
                         </div>
 
@@ -241,7 +241,7 @@ export default function InterviewsPage() {
           {/* Past/Completed Interviews */}
           {pastInterviews.length > 0 && (
             <div className="animate-slideInUp" style={{ animationDelay: '100ms' }}>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-300 to-slate-400 bg-clip-text text-transparent mb-4">Past Interviews</h2>
+              <h2 className="text-2xl font-bold bg-linear-to-r from-slate-300 to-slate-400 bg-clip-text text-transparent mb-4">Past Interviews</h2>
               <div className="space-y-4">
                 {pastInterviews.map((interview, idx) => (
                   <Card 
@@ -251,7 +251,7 @@ export default function InterviewsPage() {
                   >
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                       <div className="flex items-start lg:items-center gap-4 flex-1 min-w-0">
-                        <div className="w-12 h-12 bg-gradient-to-br from-slate-500 to-slate-600 rounded-full flex items-center justify-center text-white font-semibold shrink-0 group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-linear-to-br from-slate-500 to-slate-600 rounded-full flex items-center justify-center text-white font-semibold shrink-0 group-hover:scale-110 transition-transform">
                           {interview.candidates?.full_name?.charAt(0) || 'C'}
                         </div>
 

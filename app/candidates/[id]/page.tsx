@@ -17,6 +17,8 @@ export default function CandidateDetailPage() {
   const [applications, setApplications] = useState<any[]>([]);
   const [interviews, setInterviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [resumeScore, setResumeScore] = useState<number | null>(null);
+  const [scoringResume, setScoringResume] = useState(false);
 
   useEffect(() => {
     if (candidateId) {
@@ -35,6 +37,13 @@ export default function CandidateDetailPage() {
 
       if (candidateError) throw candidateError;
       setCandidate(candidateData);
+      
+      if (candidateData?.resume_score) {
+        setResumeScore(candidateData.resume_score);
+      } else if (candidateData?.id) {
+        // Score resume if not already scored
+        scoreResume(candidateData.id);
+      }
 
       // Fetch applications
       const { data: appsData, error: appsError } = await supabase
@@ -65,6 +74,26 @@ export default function CandidateDetailPage() {
       console.error('Error fetching candidate details:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function scoreResume(candidateId: string) {
+    setScoringResume(true);
+    try {
+      const response = await fetch('/api/score-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ candidateId }),
+      });
+
+      if (response.ok) {
+        const { score } = await response.json();
+        setResumeScore(score);
+      }
+    } catch (error) {
+      console.error('Error scoring resume:', error);
+    } finally {
+      setScoringResume(false);
     }
   }
 
@@ -105,14 +134,14 @@ export default function CandidateDetailPage() {
       {/* Profile Card */}
       <Card>
         <div className="flex items-start gap-6">
-          <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white text-4xl font-semibold shrink-0">
+          <div className="w-24 h-24 bg-background rounded-full flex items-center justify-center text-4xl font-semibold shrink-0">
             {candidate.full_name.charAt(0)}
           </div>
 
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{candidate.full_name}</h1>
+            <h1 className="text-3xl font-bold mb-2">{candidate.full_name}</h1>
             
-            <div className="flex flex-wrap gap-4 text-gray-600 mb-4">
+            <div className="flex flex-wrap gap-4 mb-4">
               {candidate.email && (
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
@@ -147,12 +176,12 @@ export default function CandidateDetailPage() {
       </Card>
 
       {/* Details Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card title="Education">
           <div className="flex items-start gap-3">
-            <GraduationCap className="w-5 h-5 text-blue-600 mt-1" />
+            <GraduationCap className="w-5 h-5 mt-1 text-blue-500" />
             <div>
-              <p className="text-gray-900 font-medium">
+              <p className=" font-medium">
                 {candidate.education || 'Not specified'}
               </p>
             </div>
@@ -161,9 +190,9 @@ export default function CandidateDetailPage() {
 
         <Card title="Experience">
           <div className="flex items-start gap-3">
-            <Briefcase className="w-5 h-5 text-green-600 mt-1" />
+            <Briefcase className="w-5 h-5 text-green-300 mt-1" />
             <div>
-              <p className="text-gray-900 font-medium">
+              <p className="font-medium">
                 {candidate.experience_years !== null 
                   ? `${candidate.experience_years} years` 
                   : 'Not specified'}
@@ -176,9 +205,21 @@ export default function CandidateDetailPage() {
           <div className="flex items-start gap-3">
             <Calendar className="w-5 h-5 text-purple-600 mt-1" />
             <div>
-              <p className="text-gray-900 font-medium">
+              <p className="font-medium">
                 {new Date(candidate.created_at).toLocaleDateString()}
               </p>
+            </div>
+          </div>
+        </Card>
+
+        <Card title="AI Resume Score" className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/30">
+          <div className="flex items-start gap-3">
+            <div className="w-5 h-5 mt-1 text-yellow-500">⭐</div>
+            <div>
+              <p className="font-bold text-2xl text-yellow-500">
+                {scoringResume ? 'Calculating...' : resumeScore ? `${resumeScore}%` : 'N/A'}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">ATS Score</p>
             </div>
           </div>
         </Card>
@@ -191,7 +232,7 @@ export default function CandidateDetailPage() {
             {candidate.skills.split(',').map((skill, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium"
+                className="px-3 py-1.5 bg-background rounded-lg text-sm font-medium"
               >
                 {skill.trim()}
               </span>
@@ -212,11 +253,11 @@ export default function CandidateDetailPage() {
             {applications.map((app) => (
               <div
                 key={app.id}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                className="flex items-center justify-between p-4 bg-background rounded-lg"
               >
                 <div>
-                  <p className="font-medium text-gray-900">{app.jobs?.title}</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="font-medium">{app.jobs?.title}</p>
+                  <p className="text-sm">
                     Applied on {new Date(app.applied_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -244,11 +285,11 @@ export default function CandidateDetailPage() {
             {interviews.map((interview) => (
               <div
                 key={interview.id}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                className="flex items-center justify-between p-4 bg-background rounded-lg"
               >
                 <div>
-                  <p className="font-medium text-gray-900">{interview.jobs?.title}</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="font-medium">{interview.jobs?.title}</p>
+                  <p className="text-sm text">
                     {new Date(interview.start_time).toLocaleString()} - {new Date(interview.end_time).toLocaleTimeString()}
                   </p>
                 </div>

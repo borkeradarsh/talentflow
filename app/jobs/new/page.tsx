@@ -75,7 +75,7 @@ export default function NewJobPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Post New Job</h1>
+          <h1 className="text-4xl font-bold bg-linear-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Post New Job</h1>
           <p className="text-slate-400 mt-2">Create a new job posting</p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function NewJobPage() {
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" disabled={loading} className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+            <Button type="submit" disabled={loading} className="bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
               {loading ? 'Creating...' : 'Create Job'}
             </Button>
           </div>

@@ -93,29 +93,25 @@ export default function Dashboard() {
       title: 'Total Candidates',
       value: stats.totalCandidates,
       icon: Users,
-      gradient: 'from-blue-500 to-blue-600',
-      trend: '+12%',
+      color: '#FF7F00',
     },
     {
       title: 'Open Jobs',
       value: stats.openJobs,
       icon: Briefcase,
-      gradient: 'from-green-500 to-emerald-600',
-      trend: '+8%',
+      color: '#22c55e',
     },
     {
       title: 'Total Applications',
       value: stats.totalApplications,
       icon: FileText,
-      gradient: 'from-purple-500 to-violet-600',
-      trend: '+24%',
+      color: '#f97316',
     },
     {
       title: 'Upcoming Interviews',
       value: stats.upcomingInterviews,
       icon: Calendar,
-      gradient: 'from-orange-500 to-red-600',
-      trend: '+5%',
+      color: '#eab308',
     },
   ];
 
@@ -125,11 +121,11 @@ export default function Dashboard() {
         <div className="text-center">
           <div className="inline-flex items-center justify-center">
             <div className="relative w-12 h-12">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-2 bg-slate-800 rounded-full"></div>
+              <div className="absolute inset-0 bg-[#FF7F00] rounded-full animate-spin"></div>
+              <div className="absolute inset-2 bg-[#0a0a0a] rounded-full"></div>
             </div>
           </div>
-          <p className="mt-4 text-slate-300">Loading dashboard...</p>
+          <p className="mt-4 text-gray-300">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -140,13 +136,13 @@ export default function Dashboard() {
       {/* Page Header */}
       <div className="flex justify-between items-start mb-8">
         <div className="animate-slideInLeft">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Dashboard</h1>
-          <p className="text-slate-400 mt-2">Welcome back! Here's your recruitment overview</p>
+          <h1 className="text-4xl font-bold text-white">Dashboard</h1>
+          <p className="text-gray-400 mt-2">Welcome back! Here's your recruitment overview</p>
         </div>
         <Link href="/jobs/new" className="animate-slideInUp" style={{ animationDelay: '100ms' }}>
           <Button variant="primary" className="group">
-            <span>Post New Job</span>
-            <ArrowUpRight className="w-4 h-4 ml-1 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"/>
+             Post New Job
           </Button>
         </Link>
       </div>
@@ -163,17 +159,17 @@ export default function Dashboard() {
             >
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-sm text-slate-300 font-medium">{stat.title}</p>
-                  <div className={`bg-gradient-to-br ${stat.gradient} p-2 rounded-lg group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-5 h-5 text-white" />
+                  <p className="text-sm text-gray-300 font-medium">{stat.title}</p>
+                  <div className="p-2 rounded-lg group-hover:scale-110 transition-transform" style={{ backgroundColor: `${stat.color}30` }}>
+                    <Icon className="w-5 h-5" style={{ color: stat.color }} />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-3xl font-bold text-slate-100">{stat.value}</p>
+                  <p className="text-3xl font-bold text-white">{stat.value}</p>
                 </div>
               </div>
               {/* Animated background */}
-              <div className={`absolute -right-8 -bottom-8 w-32 h-32 bg-gradient-to-br ${stat.gradient} rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 blur-2xl`}></div>
+              <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 blur-2xl" style={{ backgroundColor: stat.color }}></div>
             </Card>
           );
         })}
@@ -181,27 +177,27 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-blue-600/30 to-blue-500/20 border-blue-500/30 hover:border-blue-400/50 group relative overflow-hidden">
+        <Card className="border-[#FF7F00]/30 hover:border-[#FF7F00]/50 group relative overflow-hidden">
           <div className="relative z-10 flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-500/30 rounded-lg flex items-center justify-center group-hover:bg-blue-500/50 transition-colors">
-              <Clock className="w-6 h-6 text-blue-300" />
+            <div className="w-12 h-12 bg-[#FF7F00]/20 rounded-lg flex items-center justify-center group-hover:bg-[#FF7F00]/30 transition-colors">
+              <Clock className="w-6 h-6 text-[#FF7F00]" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-100">{stats.newApplications}</p>
-              <p className="text-blue-300 text-sm">New Applications Today</p>
+              <p className="text-2xl font-bold text-white">{stats.newApplications}</p>
+              <p className="text-[#FF7F00] text-sm">New Applications Today</p>
             </div>
           </div>
-          <div className="absolute -right-12 -bottom-12 w-40 h-40 bg-blue-500 rounded-full opacity-0 group-hover:opacity-5 transition-opacity duration-300 blur-3xl"></div>
+          <div className="absolute -right-12 -bottom-12 w-40 h-40 bg-[#FF7F00] rounded-full opacity-0 group-hover:opacity-5 transition-opacity duration-300 blur-3xl"></div>
         </Card>
 
         <Link href="/applications" className="block group">
           <Card className="h-full group-hover:scale-105 transition-transform duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-400 text-sm font-medium">Review Applications</p>
-                <p className="text-2xl font-bold text-slate-100 mt-1">{stats.totalApplications}</p>
+                <p className="text-gray-400 text-sm font-medium">Review Applications</p>
+                <p className="text-2xl font-bold text-white mt-1">{stats.totalApplications}</p>
               </div>
-              <FileText className="w-8 h-8 text-blue-400 group-hover:scale-110 transition-transform" />
+              <FileText className="w-8 h-8 text-[#FF7F00] group-hover:scale-110 transition-transform" />
             </div>
           </Card>
         </Link>
@@ -210,10 +206,10 @@ export default function Dashboard() {
           <Card className="h-full group-hover:scale-105 transition-transform duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-400 text-sm font-medium">Schedule Interviews</p>
-                <p className="text-2xl font-bold text-slate-100 mt-1">{stats.upcomingInterviews}</p>
+                <p className="text-gray-400 text-sm font-medium">Schedule Interviews</p>
+                <p className="text-2xl font-bold text-white mt-1">{stats.upcomingInterviews}</p>
               </div>
-              <Calendar className="w-8 h-8 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <Calendar className="w-8 h-8 text-green-500 group-hover:scale-110 transition-transform" />
             </div>
           </Card>
         </Link>
@@ -222,12 +218,12 @@ export default function Dashboard() {
       {/* Recent Applications */}
       <Card title="Recent Applications" action={
         <Link href="/applications">
-          <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300">View All →</Button>
+          <Button variant="ghost" size="sm" className="text-[#FF7F00] hover:text-red-600">View All →</Button>
         </Link>
       }>
         {recentApplications.length === 0 ? (
-          <div className="text-center py-12 text-slate-500">
-            <FileText className="w-12 h-12 mx-auto mb-3 text-slate-600" />
+          <div className="text-center py-12 text-gray-500">
+            <FileText className="w-12 h-12 mx-auto mb-3 text-gray-700" />
             <p>No applications yet</p>
           </div>
         ) : (
@@ -235,25 +231,25 @@ export default function Dashboard() {
             {recentApplications.map((app, idx) => (
               <div 
                 key={app.id} 
-                className="flex items-center justify-between p-4 bg-slate-700/30 rounded-lg hover:bg-slate-700/50 transition-all duration-300 group border border-slate-600/50 hover:border-blue-500/30 animate-fadeIn"
+                className="flex items-center justify-between p-4 bg-[#1a1a1a] rounded-lg hover:bg-[#252525] transition-all duration-300 group border border-[#262626] hover:border-[#FF7F00]/30 animate-fadeIn"
                 style={{ animationDelay: `${idx * 50}ms` }}
               >
                 <div className="flex items-center gap-4 flex-1">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 bg-[#FF7F00] rounded-full flex items-center justify-center text-white font-semibold group-hover:scale-110 transition-transform shadow-lg shadow-red-900/30">
                     {app.candidates?.full_name?.charAt(0) || 'C'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-slate-100 truncate">{app.candidates?.full_name || 'Unknown'}</p>
-                    <p className="text-sm text-slate-400">{app.jobs?.title || 'Unknown Position'}</p>
+                    <p className="font-medium text-white truncate">{app.candidates?.full_name || 'Unknown'}</p>
+                    <p className="text-sm text-gray-400">{app.jobs?.title || 'Unknown Position'}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 ml-4">
                   <Badge status={app.status} />
-                  <span className="text-sm text-slate-400 whitespace-nowrap">
+                  <span className="text-sm text-gray-400 whitespace-nowrap">
                     {new Date(app.applied_at).toLocaleDateString()}
                   </span>
                   <Link href={`/applications/${app.id}`}>
-                    <Button variant="ghost" size="sm" className="text-slate-400 hover:text-blue-300">View</Button>
+                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">View</Button>
                   </Link>
                 </div>
               </div>

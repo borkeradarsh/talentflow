@@ -16,7 +16,8 @@ export default function SignUpPage() {
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'candidate' as 'admin' | 'recruiter' | 'candidate'
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,6 +47,7 @@ export default function SignUpPage() {
         options: {
           data: {
             name: formData.name,
+            role: formData.role
           }
         }
       });
@@ -53,22 +55,7 @@ export default function SignUpPage() {
       if (signUpError) throw signUpError;
 
       if (data.user) {
-        // Create user record in the users table
-        const { error: userError } = await supabase.from('users').insert([
-          {
-            id: data.user.id,
-            email: formData.email,
-            name: formData.name,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        ]);
-
-        if (userError) {
-          console.error('Error creating user record:', userError);
-          // Don't throw - user auth was created successfully, this is just for our database
-        }
-
+        // User record will be automatically created by database trigger
         setSuccess(true);
         // Redirect to login after 2 seconds
         setTimeout(() => {
@@ -89,7 +76,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-center p-4 overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-center p-4 overflow-hidden">
       {/* Background animated elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -106,7 +93,7 @@ export default function SignUpPage() {
 
         {/* Logo and Title */}
         <div className="text-center mb-8 animate-fadeIn">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-blue-400 to-purple-400 rounded-2xl mb-4">
             <Brain className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold mb-2">Create Account</h1>
@@ -115,7 +102,7 @@ export default function SignUpPage() {
 
         {/* Sign Up Form */}
         <div className="relative bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl hover:border-blue-500/50 transition-all duration-300 animate-fadeIn">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-blue-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
           
           <div className="relative">
             {error && (
@@ -217,6 +204,45 @@ export default function SignUpPage() {
                     placeholder="••••••••"
                     className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-500 text-white transition-all"
                   />
+                </div>
+              </div>
+
+              {/* Role Selection */}
+              <div>
+                <label className="block text-sm font-medium text-slate-200 mb-3">
+                  I am signing up as
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, role: 'candidate' }))}
+                    className={`p-4 rounded-lg border-2 transition-all ${
+                      formData.role === 'candidate'
+                        ? 'border-blue-500 bg-blue-500/10 text-blue-300'
+                        : 'border-slate-600 bg-slate-700/50 text-slate-300 hover:border-slate-500'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <User className="w-6 h-6 mx-auto mb-2" />
+                      <div className="font-medium">Candidate</div>
+                      <div className="text-xs mt-1 opacity-75">Looking for jobs</div>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, role: 'recruiter' }))}
+                    className={`p-4 rounded-lg border-2 transition-all ${
+                      formData.role === 'recruiter'
+                        ? 'border-blue-500 bg-blue-500/10 text-blue-300'
+                        : 'border-slate-600 bg-slate-700/50 text-slate-300 hover:border-slate-500'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <User className="w-6 h-6 mx-auto mb-2" />
+                      <div className="font-medium">Recruiter</div>
+                      <div className="text-xs mt-1 opacity-75">Hiring talent</div>
+                    </div>
+                  </button>
                 </div>
               </div>
 
