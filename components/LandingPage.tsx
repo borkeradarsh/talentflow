@@ -100,17 +100,6 @@ export default function LandingPage() {
                   TalentFlow AI revolutionizes recruitment with intelligent automation, AI-powered screening, and smart candidate matching. Transform your hiring from days to hours.
                 </p>
               </div>
-              <div className="flex gap-4">
-                <Link href="/signup">
-                  <Button variant="primary" size="lg" className="group">
-                    Get Started Free
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-                <button className="px-6 py-3 bg-slate-700/50 hover:bg-slate-700 rounded-lg font-medium transition-colors border border-slate-600">
-                  Watch Demo
-                </button>
-              </div>
             </div>
 
             {/* SVG Illustration */}
@@ -137,33 +126,31 @@ export default function LandingPage() {
                 <circle cx="80" cy="300" r="8" fill="#EC4899" opacity="0.8" className="animate-pulse animation-delay-1000" />
                 <circle cx="320" cy="300" r="8" fill="#3B82F6" opacity="0.8" className="animate-pulse animation-delay-1500" />
                 
-                {/* Connection lines */}
-                <line x1="200" y1="70" x2="200" y2="130" stroke="#3B82F6" strokeWidth="2" opacity="0.4" />
-                <line x1="200" y1="270" x2="200" y2="330" stroke="#3B82F6" strokeWidth="2" opacity="0.4" />
-                <line x1="70" y1="200" x2="130" y2="200" stroke="#8B5CF6" strokeWidth="2" opacity="0.4" />
-                <line x1="270" y1="200" x2="330" y2="200" stroke="#EC4899" strokeWidth="2" opacity="0.4" />
+               {/* Connection lines */}
+<line 
+  x1="200" y1="70" x2="200" y2="130" 
+  stroke="#3B82F6" strokeWidth="2" opacity="0.4" 
+  className="animate-data-flow" 
+/>
+<line 
+  x1="200" y1="270" x2="200" y2="330" 
+  stroke="#3B82F6" strokeWidth="2" opacity="0.4" 
+  className="animate-data-flow" 
+/>
+<line 
+  x1="70" y1="200" x2="130" y2="200" 
+  stroke="#8B5CF6" strokeWidth="2" opacity="0.4" 
+  className="animate-data-flow" 
+/>
+<line 
+  x1="270" y1="200" x2="330" y2="200" 
+  stroke="#EC4899" strokeWidth="2" opacity="0.4" 
+  className="animate-data-flow" 
+/>
+                
               </svg>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="relative py-16 px-4 sm:px-6 lg:px-8 border-y border-slate-700/50">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[
-            { value: '10x', label: 'Faster Hiring' },
-            { value: '95%', label: 'Accuracy Rate' },
-            { value: '500+', label: 'Companies Trust Us' },
-            { value: '24h', label: 'Avg First Match' }
-          ].map((stat, i) => (
-            <div key={i} className="text-center animate-fadeIn" style={{ animationDelay: `${i * 100}ms` }}>
-              <div className="text-3xl md:text-4xl font-bold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                {stat.value}
-              </div>
-              <div className="text-slate-400 mt-2">{stat.label}</div>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -228,45 +215,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center animate-fadeIn">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Transform Your Hiring?
-          </h2>
-          <p className="text-xl text-slate-300 mb-8">
-            Join hundreds of companies already using TalentFlow to hire smarter, faster, and better.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/signup">
-              <Button variant="primary" size="lg">
-                Start Your Free Trial
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button variant="ghost" size="lg" className="border border-slate-600">
-                Sign In to Your Account
-              </Button>
-            </Link>
-          </div>
-          <p className="text-slate-400 text-sm mt-6">
-            No credit card required. Start free today.
-          </p>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="relative border-t border-slate-700/50 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-sm">
-          <div>© 2026 TalentFlow AI. All rights reserved.</div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Contact</a>
-          </div>
-        </div>
-      </footer>
+<footer className="relative border-t border-slate-700/50 py-8 px-4 sm:px-6 lg:px-8">
+  <div className="max-w-7xl mx-auto flex justify-center items-center text-slate-400 text-sm">
+    <div>© 2026 TalentFlow.AI</div>
+  </div>
+</footer>
 
       {/* CSS Animations */}
       <style jsx>{`
@@ -275,6 +229,19 @@ export default function LandingPage() {
           33% { transform: translate(30px, -50px) scale(1.1); }
           66% { transform: translate(-20px, 20px) scale(0.9); }
         }
+          @keyframes dataFlow {
+  from {
+    stroke-dashoffset: 20;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-data-flow {
+  stroke-dasharray: 4 8; /* This creates the "beads" look */
+  animation: dataFlow 1.5s linear infinite;
+}
 
         @keyframes float {
           0%, 100% { transform: translateY(0px); }

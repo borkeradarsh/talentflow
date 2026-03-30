@@ -119,7 +119,6 @@ export default function LoginPage() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="you@example.com"
                     className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-500 text-white transition-all"
                   />
                 </div>
@@ -139,7 +138,6 @@ export default function LoginPage() {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="••••••••"
                     className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-500 text-white transition-all"
                   />
                 </div>
@@ -185,7 +183,7 @@ export default function LoginPage() {
 
         {/* Footer Note */}
         <p className="text-center text-xs text-slate-500 mt-6">
-          © 2026 TalentFlow AI. All rights reserved.
+          © 2026 TalentFlow.AI
         </p>
       </div>
 

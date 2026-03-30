@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, User, LogOut, Mail } from 'lucide-react';
+import {  User, LogOut, Mail } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useState } from 'react';
 
@@ -20,11 +20,6 @@ export default function CandidateHeader() {
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
-          {/* Notifications */}
-          <button className="relative p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700/40 rounded-lg transition-all duration-300 group">
-            <Bell className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-          </button>
 
           {/* User Profile */}
           <div className="relative">

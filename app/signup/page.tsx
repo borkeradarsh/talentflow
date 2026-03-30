@@ -140,7 +140,6 @@ export default function SignUpPage() {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    placeholder="John Doe"
                     className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-500 text-white transition-all"
                   />
                 </div>
@@ -160,7 +159,6 @@ export default function SignUpPage() {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="you@example.com"
                     className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-500 text-white transition-all"
                   />
                 </div>
@@ -180,7 +178,6 @@ export default function SignUpPage() {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="••••••••"
                     className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-500 text-white transition-all"
                   />
                 </div>
@@ -201,7 +198,7 @@ export default function SignUpPage() {
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="••••••••"
+
                     className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-500 text-white transition-all"
                   />
                 </div>
@@ -246,25 +243,6 @@ export default function SignUpPage() {
                 </div>
               </div>
 
-              {/* Terms & Conditions */}
-              <div className="flex items-start gap-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  required
-                  className="w-4 h-4 bg-slate-700 border-slate-600 rounded focus:ring-blue-500 mt-0.5 cursor-pointer"
-                />
-                <label htmlFor="terms" className="text-sm text-slate-300">
-                  I agree to the{' '}
-                  <button type="button" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
-                    Terms of Service
-                  </button>{' '}
-                  and{' '}
-                  <button type="button" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
-                    Privacy Policy
-                  </button>
-                </label>
-              </div>
 
               {/* Submit Button */}
               <Button
@@ -289,7 +267,7 @@ export default function SignUpPage() {
 
         {/* Footer Note */}
         <p className="text-center text-xs text-slate-500 mt-6">
-          © 2026 TalentFlow AI. All rights reserved.
+          © 2026 TalentFlow.AI.
         </p>
       </div>
 
