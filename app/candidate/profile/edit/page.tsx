@@ -208,7 +208,6 @@ export default function CandidateProfileEditPage() {
 
       <main className="ml-64 pt-16 min-h-screen">
         <div className="p-6 relative z-10">
-          {/* Header */}
           <div className="flex items-center gap-4 mb-8">
             <Button variant="ghost" onClick={() => router.push('/candidate/profile')}>
               <ArrowLeft className="w-5 h-5" />
@@ -221,7 +220,6 @@ export default function CandidateProfileEditPage() {
 
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Main Form */}
               <div className="lg:col-span-2 space-y-6">
                 <Card>
                   <h2 className="text-xl font-bold mb-6">Personal Information</h2>
@@ -380,7 +378,6 @@ export default function CandidateProfileEditPage() {
                 </Card>
               </div>
 
-              {/* Sidebar */}
               <div className="space-y-6">
                 <Card className="sticky top-24">
                   <h3 className="font-semibold mb-4">Profile Completion</h3>

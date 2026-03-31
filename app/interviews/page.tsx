@@ -4,20 +4,21 @@ import { useEffect, useState } from 'react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { supabase } from '@/lib/supabase';
+import { supabase, Interview } from '@/lib/supabase';
 import { Calendar, Plus, Search, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled';
 
 export default function InterviewsPage() {
-  const [interviews, setInterviews] = useState<any[]>([]);
+  const [interviews, setInterviews] = useState<(Interview & { candidates?: { full_name: string; email: string }; jobs?: { title: string } })[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<StatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchInterviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   async function fetchInterviews() {
@@ -67,7 +68,6 @@ export default function InterviewsPage() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Page Header */}
       <div className="flex justify-between items-start mb-8 animate-slideInLeft">
         <div>
           <h1 className="text-4xl font-bold bg-linear-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">Interviews</h1>
@@ -81,7 +81,6 @@ export default function InterviewsPage() {
         </Link>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Object.entries(statusCounts).map(([status, count], idx) => (
           <div
@@ -104,7 +103,6 @@ export default function InterviewsPage() {
         ))}
       </div>
 
-      {/* Filters */}
       <Card>
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
           <div className="flex-1 relative">
@@ -152,7 +150,6 @@ export default function InterviewsPage() {
         </div>
       </Card>
 
-      {/* Interviews List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
@@ -179,7 +176,6 @@ export default function InterviewsPage() {
         </Card>
       ) : (
         <div className="space-y-8">
-          {/* Upcoming Interviews */}
           {upcomingInterviews.length > 0 && (
             <div className="animate-slideInUp">
               <h2 className="text-2xl font-bold bg-linear-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent mb-4">Upcoming Interviews</h2>
@@ -227,9 +223,6 @@ export default function InterviewsPage() {
 
                       <div className="flex items-center gap-3 lg:ml-4 shrink-0">
                         <Badge status={interview.status as 'scheduled' | 'completed' | 'cancelled'} />
-                        <Button variant="ghost" size="sm" className="text-slate-300 hover:text-blue-300">
-                          View Details
-                        </Button>
                       </div>
                     </div>
                   </Card>
@@ -238,7 +231,6 @@ export default function InterviewsPage() {
             </div>
           )}
 
-          {/* Past/Completed Interviews */}
           {pastInterviews.length > 0 && (
             <div className="animate-slideInUp" style={{ animationDelay: '100ms' }}>
               <h2 className="text-2xl font-bold bg-linear-to-r from-slate-300 to-slate-400 bg-clip-text text-transparent mb-4">Past Interviews</h2>

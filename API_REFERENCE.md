@@ -1,6 +1,6 @@
 # TalentFlow AI - API & Data Flow Reference
 
-## 🔄 Data Flow Architecture
+## Data Flow Architecture
 
 ### Client → Supabase Direct Connection
 This application uses Supabase's client-side SDK for direct database access. No custom API routes needed!
@@ -9,7 +9,7 @@ This application uses Supabase's client-side SDK for direct database access. No 
 User Action → React Component → Supabase Client → PostgreSQL Database
 ```
 
-## 📊 Database Queries by Page
+## Database Queries by Page
 
 ### Dashboard (`/`)
 ```typescript
@@ -105,7 +105,7 @@ supabase.from('interviews').insert([{
 }])
 ```
 
-## 🔐 Row Level Security (RLS)
+## Row Level Security (RLS)
 
 ### Current Setup
 RLS is likely **disabled** for development. For production, enable RLS in Supabase:
@@ -149,7 +149,7 @@ ON interviews FOR ALL
 USING (true);
 ```
 
-## 🚀 Future API Extensions
+## Future API Extensions
 
 ### For AI Integration (Python Microservices)
 
@@ -187,7 +187,7 @@ Response: {
 }
 ```
 
-## 🔍 Search & Filter Patterns
+## Search & Filter Patterns
 
 ### Client-side Search (Current)
 ```typescript
@@ -206,7 +206,7 @@ supabase
   .textSearch('skills', query)
 ```
 
-## 📈 Performance Optimization Tips
+## Performance Optimization Tips
 
 ### 1. Use Select Filters
 ```typescript
@@ -239,7 +239,7 @@ supabase
   .subscribe()
 ```
 
-## 🛡️ Error Handling Pattern
+## Error Handling Pattern
 
 ```typescript
 async function fetchData() {
@@ -261,7 +261,7 @@ async function fetchData() {
 }
 ```
 
-## 📝 Type Safety
+## Type Safety
 
 All database types are defined in `lib/supabase.ts`:
 
@@ -283,7 +283,7 @@ Use these types in components:
 const [jobs, setJobs] = useState<Job[]>([]);
 ```
 
-## 🔄 Real-time Updates (Optional)
+## Real-time Updates (Optional)
 
 To enable real-time features:
 
@@ -307,7 +307,7 @@ useEffect(() => {
 }, []);
 ```
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [Supabase JavaScript Client Docs](https://supabase.com/docs/reference/javascript/introduction)
 - [Supabase Database Relationships](https://supabase.com/docs/guides/database/joins-and-nested-tables)

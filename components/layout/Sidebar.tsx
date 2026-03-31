@@ -25,7 +25,6 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-black text-white border-r border-[#262626]">
-      {/* Logo */}
       <div className="relative flex items-center gap-3 px-6 py-6 border-b border-[#262626]">
         <div className="w-10 h-10 bg-[#FF7F00] rounded-lg flex items-center justify-center shadow-lg shadow-orange-900/50">
           <Brain className="w-6 h-6 text-white" />
@@ -36,7 +35,6 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Navigation */}
       <nav className="relative px-3 py-4 space-y-1">
         {navigation.map((item, index) => {
           const isActive = pathname === item.href || 
@@ -60,7 +58,6 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Footer */}
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#262626]">
         <div className="text-xs text-gray-600 text-center hover:text-gray-500 transition-colors">
           © 2026 TalentFlow AI

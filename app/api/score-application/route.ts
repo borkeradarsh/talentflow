@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Fetch application with candidate and job data
     const { data: application, error: appError } = await supabase
       .from('applications')
       .select(`
@@ -41,7 +40,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate job-specific score
+    const hasEducation = !!candidate.education?.trim();
+    const hasSkills = !!candidate.skills?.trim();
+    const hasExperience = (candidate.experience_years || 0) > 0;
+
+    if (!hasEducation && !hasSkills && !hasExperience) {
+      const score = 0;
+      await supabase.from('applications').update({ ai_score: score }).eq('id', applicationId);
+      return NextResponse.json({ score });
+    }
+
     const score = await scoreResumeForJob(
       candidate.id,
       candidate.full_name,
@@ -55,7 +63,6 @@ export async function POST(req: NextRequest) {
       job.min_experience || 0
     );
 
-    // Update application with the job-specific score
     const { error: updateError } = await supabase
       .from('applications')
       .update({ ai_score: score })

@@ -1,10 +1,10 @@
 # TalentFlow AI - Setup Guide
 
-## 📦 What Has Been Built
+## What Has Been Built
 
 A complete, production-ready recruitment platform with:
 
-### ✅ Core Features Implemented
+### Core Features Implemented
 
 1. **Dashboard** (`/`)
    - Real-time recruitment statistics
@@ -37,7 +37,7 @@ A complete, production-ready recruitment platform with:
    - Upcoming and past interviews
    - Google Calendar integration ready
 
-### 🎨 UI/UX Components
+### UI/UX Components
 
 - **Navigation**: Sidebar with active route highlighting
 - **Header**: Search bar, notifications, user profile
@@ -46,7 +46,7 @@ A complete, production-ready recruitment platform with:
 - **Loading States**: Skeleton screens and spinners
 - **Empty States**: Helpful messages when no data exists
 
-### 🏗️ Architecture
+### Architecture
 
 - **Framework**: Next.js 16 with App Router
 - **Database**: Supabase (PostgreSQL)
@@ -54,7 +54,7 @@ A complete, production-ready recruitment platform with:
 - **Type Safety**: Full TypeScript support
 - **State Management**: React hooks with Supabase real-time
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Update Supabase Configuration
 
@@ -74,11 +74,11 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 ### 2. Verify Database Schema
 
 Your Supabase database should already have these tables:
-- ✅ users
-- ✅ jobs
-- ✅ candidates
-- ✅ applications
-- ✅ interviews
+- users
+- jobs
+- candidates
+- applications
+- interviews
 
 The schema is already set up as per your provided SQL!
 
@@ -90,7 +90,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-## 📊 Testing the Application
+## Testing the Application
 
 ### Adding Test Data
 
@@ -120,7 +120,7 @@ WHERE c.email = 'john@example.com' AND j.status = 'open'
 LIMIT 1;
 ```
 
-## 🔑 Key Files and Their Purpose
+## Key Files and Their Purpose
 
 ### Core Configuration
 - `lib/supabase.ts` - Supabase client and TypeScript types
@@ -149,13 +149,13 @@ LIMIT 1;
 - `app/interviews/page.tsx` - Interviews listing
 - `app/interviews/new/page.tsx` - Schedule interview
 
-## 🎯 Next Steps
+## Next Steps
 
 ### Immediate (Ready to Use)
-1. ✅ All pages are functional
-2. ✅ Database integration is complete
-3. ✅ UI is responsive and polished
-4. ✅ Routing is properly configured
+1. All pages are functional
+2. Database integration is complete
+3. UI is responsive and polished
+4. Routing is properly configured
 
 ### Phase 2 - AI Integration (Future)
 - [ ] Connect Gemini API for resume parsing
@@ -177,7 +177,7 @@ LIMIT 1;
 - [ ] Interview feedback forms
 - [ ] Candidate scoring algorithm
 
-## 🔧 Customization
+## Customization
 
 ### Changing Colors
 Edit the Tailwind classes in components. Main colors used:
@@ -192,14 +192,14 @@ Edit the Tailwind classes in components. Main colors used:
 3. Use existing UI components for consistency
 4. Connect to Supabase for data
 
-## 📱 Responsive Design
+## Responsive Design
 
 The application is fully responsive:
 - **Desktop**: Full sidebar, multi-column layouts
 - **Tablet**: Collapsible sidebar, 2-column layouts
 - **Mobile**: Hidden sidebar (hamburger menu ready), single column
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### "Cannot connect to Supabase"
 - Check `.env.local` has correct credentials
@@ -215,14 +215,14 @@ The application is fully responsive:
 - Run `npm install` to ensure all dependencies are installed
 - Check for TypeScript errors with `npm run build`
 
-## 📚 Learning Resources
+## Learning Resources
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Supabase Documentation](https://supabase.com/docs)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 
-## 🎓 Academic Project Notes
+## Academic Project Notes
 
 This project demonstrates:
 - Full-stack development skills

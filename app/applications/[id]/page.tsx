@@ -20,6 +20,7 @@ interface Candidate {
   experience_years: number | null;
   skills: string;
   resume_url: string;
+  resume_score: number | null;
 }
 
 interface Job {
@@ -35,6 +36,7 @@ interface Application {
   id: string;
   status: StatusType;
   applied_at: string;
+  ai_score: number | null;
   candidates: Candidate;
   jobs: Job;
 }
@@ -46,6 +48,7 @@ export default function ApplicationDetailPage() {
   const [application, setApplication] = useState<Application | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [scoring, setScoring] = useState(false);
 
   const fetchApplicationDetails = useCallback(async () => {
     try {
@@ -92,6 +95,26 @@ export default function ApplicationDetailPage() {
     }
   }
 
+  async function scoreApplication() {
+    if (!application) return;
+    setScoring(true);
+    try {
+      const res = await fetch('/api/score-application', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicationId: application.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to score');
+      setApplication((prev) => prev ? { ...prev, ai_score: data.score } : null);
+    } catch (error) {
+      console.error('Error scoring application:', error);
+      alert('Failed to score application');
+    } finally {
+      setScoring(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-[calc(100vh-8rem)]">
@@ -119,7 +142,6 @@ export default function ApplicationDetailPage() {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/applications">
@@ -132,7 +154,6 @@ export default function ApplicationDetailPage() {
         <Badge status={application.status} />
       </div>
 
-      {/* Candidate Info */}
       <Card title="Candidate Information">
         <div className="flex items-start gap-6">
           <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-semibold shrink-0">
@@ -159,7 +180,7 @@ export default function ApplicationDetailPage() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-background rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-background rounded-lg">
               <div>
                 <p className="text-sm text-[#FF7F00] mb-1">Education</p>
                 <p className="font-medium">{candidate.education || 'Not specified'}</p>
@@ -175,6 +196,29 @@ export default function ApplicationDetailPage() {
                 <p className="font-medium">
                   {new Date(application.applied_at).toLocaleDateString()}
                 </p>
+              </div>
+              <div>
+                <p className="text-sm text-[#FF7F00] mb-1">Resume Score</p>
+                {application.ai_score !== null && application.ai_score !== undefined ? (
+                  <div className="flex items-center gap-2">
+                    <span className={`text-lg font-bold ${
+                      application.ai_score >= 75 ? 'text-green-400' :
+                      application.ai_score >= 50 ? 'text-yellow-400' :
+                      application.ai_score >= 25 ? 'text-orange-400' : 'text-red-400'
+                    }`}>
+                      {application.ai_score}/100
+                    </span>
+                  </div>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={scoreApplication}
+                    disabled={scoring}
+                  >
+                    {scoring ? 'Scoring...' : 'Score'}
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -196,7 +240,6 @@ export default function ApplicationDetailPage() {
         </div>
       </Card>
 
-      {/* Skills */}
       {candidate.skills && (
         <Card title="Skills">
           <div className="flex flex-wrap gap-2">
@@ -212,7 +255,6 @@ export default function ApplicationDetailPage() {
         </Card>
       )}
 
-      {/* Job Details */}
       <Card title="Job Details">
         <div className="space-y-3">
           <div>
@@ -234,7 +276,6 @@ export default function ApplicationDetailPage() {
         </div>
       </Card>
 
-      {/* Actions */}
       <Card title="Update Application Status">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           <Button
@@ -282,7 +323,6 @@ export default function ApplicationDetailPage() {
         </div>
       </Card>
 
-      {/* Schedule Interview */}
       {application.status === 'interview' && (
         <Card title="Schedule Interview">
           <div className="text-center py-8">

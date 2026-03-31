@@ -9,14 +9,12 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const isAuthPage = pathname === '/login' || pathname === '/signup';
   const isLandingPage = pathname === '/';
-  // Only candidate portal pages (not recruiter's candidates page) should have no sidebar
   const isCandidatePortal = pathname.startsWith('/candidate/') || pathname === '/candidate';
 
   if (isAuthPage || isLandingPage) {
     return <>{children}</>;
   }
 
-  // Candidate portal pages handle their own layout
   if (isCandidatePortal) {
     return <>{children}</>;
   }
@@ -26,7 +24,6 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
       <Sidebar />
       <Header />
       <main className="ml-64 pt-16 min-h-screen bg-[#0a0a0a]">
-        {/* Subtle background pattern */}
         <div className="fixed inset-0 ml-64 overflow-hidden pointer-events-none z-0 opacity-5">
           <div className="absolute inset-0" style={{
             backgroundImage: `radial-gradient(circle at 2px 2px, #FF7F00 1px, transparent 0)`,
@@ -39,7 +36,6 @@ export default function LayoutContent({ children }: { children: React.ReactNode 
         </div>
       </main>
 
-      {/* CSS Animations */}
       <style jsx global>{`
         @keyframes fadeIn {
           from {

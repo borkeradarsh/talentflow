@@ -66,7 +66,6 @@ export default function NewJobPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-fadeIn">
-      {/* Header */}
       <div className="flex items-center gap-4 animate-slideInLeft">
         <Link href="/jobs">
           <Button variant="ghost" size="sm" className="text-slate-300 hover:text-blue-300">
@@ -80,10 +79,8 @@ export default function NewJobPage() {
         </div>
       </div>
 
-      {/* Form */}
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Job Title */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-slate-100 mb-2">
               Job Title *
@@ -100,7 +97,6 @@ export default function NewJobPage() {
             />
           </div>
 
-          {/* Job Description */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-slate-100 mb-2">
               Job Description *
@@ -117,7 +113,6 @@ export default function NewJobPage() {
             />
           </div>
 
-          {/* Required Skills */}
           <div>
             <label htmlFor="required_skills" className="block text-sm font-medium text-slate-100 mb-2">
               Required Skills
@@ -134,7 +129,6 @@ export default function NewJobPage() {
             <p className="text-sm text-slate-400 mt-1">Separate skills with commas</p>
           </div>
 
-          {/* Minimum Experience */}
           <div>
             <label htmlFor="min_experience" className="block text-sm font-medium text-slate-100 mb-2">
               Minimum Experience (years)
@@ -150,7 +144,6 @@ export default function NewJobPage() {
             />
           </div>
 
-          {/* Status */}
           <div>
             <label htmlFor="status" className="block text-sm font-medium text-slate-100 mb-2">
               Status
@@ -167,7 +160,6 @@ export default function NewJobPage() {
             </select>
           </div>
 
-          {/* Submit Buttons */}
           <div className="flex justify-end gap-3 pt-4">
             <Link href="/jobs">
               <Button type="button" variant="ghost" className="text-slate-300 hover:text-slate-100">

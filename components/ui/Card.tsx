@@ -1,13 +1,12 @@
-import { ReactNode, CSSProperties } from 'react';
+import React, { ReactNode, CSSProperties } from 'react';
 import { clsx } from 'clsx';
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   className?: string;
   title?: string;
   action?: ReactNode;
   style?: CSSProperties;
-  [key: string]: any;
 }
 
 export default function Card({ children, className, title, action, style, ...props }: CardProps) {
@@ -15,12 +14,11 @@ export default function Card({ children, className, title, action, style, ...pro
     <div 
       style={style}
       className={clsx(
-        'bg-[#111111] backdrop-blur-xl rounded-2xl shadow-2xl border border-[#262626] overflow-hidden group hover:border-[#FF7F00]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-900/20',
+        'bg-[#111111] backdrop-blur-xl rounded-2xl shadow-2xl border border-[#262626] overflow-hidden group hover:border-[#ffffff]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-900/20',
         className
       )}
       {...props}
     >
-      {/* Subtle gradient overlay on hover */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#FF7F00]/0 to-[#FF7F00]/0 group-hover:from-[#FF7F00]/5 group-hover:to-[#FF7F00]/5 transition-all duration-300 pointer-events-none"></div>
       
       {(title || action) && (

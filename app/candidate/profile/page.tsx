@@ -128,7 +128,6 @@ export default function CandidateProfilePage() {
 
       <main className="ml-64 pt-16 min-h-screen">
         <div className="p-6 relative z-10">
-          {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="bg-linear-to-br from-blue-500/10 to-blue-600/10 border-blue-500/30">
               <div className="flex items-center justify-between">
@@ -173,7 +172,6 @@ export default function CandidateProfilePage() {
             </Card>
           </div>
 
-          {/* Profile Section */}
           <Card className="mb-8">
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
@@ -281,7 +279,6 @@ export default function CandidateProfilePage() {
             )}
           </Card>
 
-          {/* Quick Actions */}
           <div className="mb-8">
             <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -332,7 +329,6 @@ export default function CandidateProfilePage() {
             </div>
           </div>
 
-          {/* Recent Applications */}
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">Recent Applications</h2>

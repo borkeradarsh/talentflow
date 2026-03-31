@@ -66,7 +66,6 @@ export default function CandidatesPage() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Page Header */}
       <div className="flex justify-between items-start mb-8 animate-slideInLeft">
         <div>
           <h1 className="text-4xl font-bold text-white">Candidates</h1>
@@ -74,7 +73,6 @@ export default function CandidatesPage() {
         </div>
       </div>
 
-      {/* Stats Overview */}
       <div className="grid grid-cols-3 gap-4">
         {Object.entries(statusCounts).map(([status, count], idx) => (
           <div
@@ -97,7 +95,6 @@ export default function CandidatesPage() {
         ))}
       </div>
 
-      {/* Search */}
       <Card>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
@@ -111,7 +108,6 @@ export default function CandidatesPage() {
         </div>
       </Card>
 
-      {/* Candidates List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
@@ -139,12 +135,10 @@ export default function CandidatesPage() {
               style={{ animationDelay: `${idx * 50}ms` }}
             >
               <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-                {/* Avatar */}
                 <div className="w-16 h-16 bg-[#FF7F00] rounded-full flex items-center justify-center text-white text-2xl font-semibold shrink-0 group-hover:scale-110 transition-transform shadow-lg shadow-orange-900/30">
                   {candidate.full_name.charAt(0)}
                 </div>
 
-                {/* Details */}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3 mb-3">
                     <div>

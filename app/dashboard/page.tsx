@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { supabase } from '@/lib/supabase';
+import { supabase, Application } from '@/lib/supabase';
 import { 
   Users, 
   Briefcase, 
   FileText, 
   Calendar,
-  TrendingUp,
   Clock,
   ArrowUpRight
 } from 'lucide-react';
@@ -34,7 +33,7 @@ export default function Dashboard() {
     openJobs: 0,
     newApplications: 0,
   });
-  const [recentApplications, setRecentApplications] = useState<any[]>([]);
+  const [recentApplications, setRecentApplications] = useState<(Application & { candidates?: { full_name: string }; jobs?: { title: string } })[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -133,11 +132,10 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Page Header */}
       <div className="flex justify-between items-start mb-8">
         <div className="animate-slideInLeft">
           <h1 className="text-4xl font-bold text-white">Dashboard</h1>
-          <p className="text-gray-400 mt-2">Welcome back! Here's your recruitment overview</p>
+          <p className="text-gray-400 mt-2">Welcome back! Here&apos;s your recruitment overview</p>
         </div>
         <Link href="/jobs/new" className="animate-slideInUp" style={{ animationDelay: '100ms' }}>
           <Button variant="primary" className="group">
@@ -147,7 +145,6 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
@@ -168,14 +165,12 @@ export default function Dashboard() {
                   <p className="text-3xl font-bold text-white">{stat.value}</p>
                 </div>
               </div>
-              {/* Animated background */}
               <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300 blur-2xl" style={{ backgroundColor: stat.color }}></div>
             </Card>
           );
         })}
       </div>
 
-      {/* Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="border-[#FF7F00]/30 hover:border-[#FF7F00]/50 group relative overflow-hidden">
           <div className="relative z-10 flex items-center gap-4">
@@ -215,7 +210,6 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* Recent Applications */}
       <Card title="Recent Applications" action={
         <Link href="/applications">
           <Button variant="ghost" size="sm" className="text-[#FF7F00] hover:text-red-600">View All →</Button>

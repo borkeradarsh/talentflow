@@ -2,7 +2,7 @@
 
 An AI-driven hiring automation platform designed to streamline and optimize the end-to-end recruitment workflow.
 
-## 🚀 Features
+## Features
 
 - **Dashboard**: Real-time recruitment metrics and statistics
 - **Job Management**: Create, manage, and track job postings
@@ -11,7 +11,7 @@ An AI-driven hiring automation platform designed to streamline and optimize the 
 - **Interview Scheduling**: Automated interview scheduling with Google Calendar integration
 - **AI-Powered Screening**: Resume parsing and candidate evaluation using NLP and ML
 
-## 📋 Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 16 (App Router), React 19, TypeScript
 - **Styling**: Tailwind CSS 4
@@ -20,7 +20,7 @@ An AI-driven hiring automation platform designed to streamline and optimize the 
 - **Integrations**: Gmail API, Google Calendar API
 - **Icons**: Lucide React
 
-## 🛠️ Installation
+## Installation
 
 ### Prerequisites
 
@@ -76,7 +76,7 @@ An AI-driven hiring automation platform designed to streamline and optimize the 
    
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 talentflow/
@@ -109,7 +109,7 @@ talentflow/
 └── .env.local                     # Environment variables
 ```
 
-## 🎯 Key Pages
+## Key Pages
 
 ### Dashboard (`/`)
 - Overview of recruitment metrics
@@ -141,7 +141,7 @@ talentflow/
 - Track interview status
 - Upcoming and past interviews
 
-## 🔐 Database Schema
+## Database Schema
 
 The application uses the following database structure:
 
@@ -151,7 +151,7 @@ The application uses the following database structure:
 - **applications**: Link candidates to jobs with application status
 - **interviews**: Schedule and track interviews
 
-## 🚀 Future Enhancements
+## Future Enhancements
 
 - Resume auto-ingestion from Gmail
 - AI-powered resume parsing and ranking
@@ -162,7 +162,7 @@ The application uses the following database structure:
 - Real-time notifications
 - Video interview integration
 
-## 📝 Notes
+## Notes
 
 - Make sure to configure your Supabase project URL and API keys
 - Gmail and Google Calendar APIs need to be set up in Google Cloud Console
@@ -178,17 +178,17 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## 👥 Contributing
+## Contributing
 
 This is an academic project for Computer Science major. Contributions and suggestions are welcome!
 
-## 📄 License
+## License
 
 Academic Project - 2026
 
 ---
 
-Built with ❤️ using Next.js, Supabase, and AI
+Built with Next.js, Supabase, and AI
 
 ## Deploy on Vercel
 

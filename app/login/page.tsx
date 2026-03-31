@@ -51,9 +51,9 @@ export default function LoginPage() {
         }
         router.refresh();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
-      setError(error.message || 'Invalid email or password');
+      setError(error instanceof Error ? error.message : 'Invalid email or password');
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-center p-4 overflow-hidden">
-      {/* Background animated elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div className="absolute -top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
@@ -74,13 +73,11 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Back to Home Link */}
         <Link href="/" className="inline-flex items-center gap-2 text-slate-300 hover:text-white transition-colors mb-8">
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm">Back to Home</span>
         </Link>
 
-        {/* Logo and Title */}
         <div className="text-center mb-8 animate-fadeIn">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-blue-400 to-purple-400 rounded-2xl mb-4">
             <Brain className="w-10 h-10 text-white" />
@@ -89,7 +86,6 @@ export default function LoginPage() {
           <p className="text-slate-300">Sign in to your TalentFlow account</p>
         </div>
 
-        {/* Login Form */}
         <div className="relative bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-8 shadow-2xl hover:border-blue-500/50 transition-all duration-300 animate-fadeIn">
           <div className="absolute inset-0 bg-linear-to-br from-blue-500 to-purple-500 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
           
@@ -105,7 +101,6 @@ export default function LoginPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Email Field */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-slate-200 mb-2">
                   Email Address
@@ -124,7 +119,6 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Password Field */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-slate-200 mb-2">
                   Password
@@ -143,7 +137,6 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center gap-2 cursor-pointer hover:text-slate-200 transition-colors">
                   <input
@@ -160,7 +153,6 @@ export default function LoginPage() {
                 </button>
               </div>
 
-              {/* Submit Button */}
               <Button
                 type="submit"
                 disabled={loading}
@@ -171,9 +163,8 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            {/* Sign Up Link */}
             <div className="mt-6 text-center text-sm text-slate-400">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
                 Create one
               </Link>
@@ -181,13 +172,11 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Footer Note */}
         <p className="text-center text-xs text-slate-500 mt-6">
           © 2026 TalentFlow.AI
         </p>
       </div>
 
-      {/* CSS Animations */}
       <style jsx>{`
         @keyframes blob {
           0%, 100% { transform: translate(0, 0) scale(1); }

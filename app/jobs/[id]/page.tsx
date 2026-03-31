@@ -94,7 +94,6 @@ export default function JobDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/jobs">
@@ -117,7 +116,6 @@ export default function JobDetailPage() {
         </div>
       </div>
 
-      {/* Job Details */}
       <Card>
         <div className="space-y-4">
           <div className="flex items-start justify-between">
@@ -151,7 +149,6 @@ export default function JobDetailPage() {
         </div>
       </Card>
 
-      {/* Applications */}
       <Card title={`Applications (${applications.length})`}>
         {applications.length === 0 ? (
           <div className="text-center py-8 text-gray-400">

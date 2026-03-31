@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { supabase, Candidate } from '@/lib/supabase';
+import { supabase, Candidate, Application, Interview } from '@/lib/supabase';
 import { ArrowLeft, Mail, Phone, GraduationCap, Briefcase, Calendar, FileText } from 'lucide-react';
 import Link from 'next/link';
 
@@ -14,8 +14,8 @@ export default function CandidateDetailPage() {
   const candidateId = params.id as string;
 
   const [candidate, setCandidate] = useState<Candidate | null>(null);
-  const [applications, setApplications] = useState<any[]>([]);
-  const [interviews, setInterviews] = useState<any[]>([]);
+  const [applications, setApplications] = useState<(Application & { jobs?: { title: string; status: string } })[]>([]);
+  const [interviews, setInterviews] = useState<(Interview & { jobs?: { title: string } })[]>([]);
   const [loading, setLoading] = useState(true);
   const [resumeScore, setResumeScore] = useState<number | null>(null);
   const [scoringResume, setScoringResume] = useState(false);
@@ -24,6 +24,7 @@ export default function CandidateDetailPage() {
     if (candidateId) {
       fetchCandidateDetails();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [candidateId]);
 
   async function fetchCandidateDetails() {
@@ -121,7 +122,6 @@ export default function CandidateDetailPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <Link href="/candidates">
           <Button variant="ghost" size="sm">
@@ -131,7 +131,6 @@ export default function CandidateDetailPage() {
         </Link>
       </div>
 
-      {/* Profile Card */}
       <Card>
         <div className="flex items-start gap-6">
           <div className="w-24 h-24 bg-background rounded-full flex items-center justify-center text-4xl font-semibold shrink-0">
@@ -175,7 +174,6 @@ export default function CandidateDetailPage() {
         </div>
       </Card>
 
-      {/* Details Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card title="Education">
           <div className="flex items-start gap-3">
@@ -214,7 +212,7 @@ export default function CandidateDetailPage() {
 
         <Card title="AI Resume Score" className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/30">
           <div className="flex items-start gap-3">
-            <div className="w-5 h-5 mt-1 text-yellow-500">⭐</div>
+            <div className="w-5 h-5 mt-1 text-yellow-500"></div>
             <div>
               <p className="font-bold text-2xl text-yellow-500">
                 {scoringResume ? 'Calculating...' : resumeScore ? `${resumeScore}%` : 'N/A'}
@@ -225,7 +223,6 @@ export default function CandidateDetailPage() {
         </Card>
       </div>
 
-      {/* Skills */}
       {candidate.skills && (
         <Card title="Skills">
           <div className="flex flex-wrap gap-2">
@@ -241,7 +238,6 @@ export default function CandidateDetailPage() {
         </Card>
       )}
 
-      {/* Applications */}
       <Card title={`Applications (${applications.length})`}>
         {applications.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
@@ -273,7 +269,6 @@ export default function CandidateDetailPage() {
         )}
       </Card>
 
-      {/* Interviews */}
       <Card title={`Interviews (${interviews.length})`}>
         {interviews.length === 0 ? (
           <div className="text-center py-8 text-gray-500">

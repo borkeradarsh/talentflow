@@ -25,10 +25,8 @@ export default function CandidateSidebar() {
 
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-linear-to-b from-slate-900 via-slate-800 to-slate-900 text-white border-r border-slate-700/50 backdrop-blur-sm">
-      {/* Background accent */}
       <div className="absolute inset-0 bg-linear-to-r from-blue-500/5 to-purple-500/5 pointer-events-none"></div>
 
-      {/* Logo */}
       <div className="relative flex items-center gap-3 px-6 py-6 border-b border-slate-700/50">
         <div className="w-10 h-10 bg-linear-to-br from-blue-400 to-purple-400 rounded-lg flex items-center justify-center shadow-lg">
           <Brain className="w-6 h-6 text-white" />
@@ -39,7 +37,6 @@ export default function CandidateSidebar() {
         </div>
       </div>
 
-      {/* Navigation */}
       <nav className="relative px-3 py-4 space-y-1">
         {navigation.map((item) => {
           const isActive = pathname === item.href || 
@@ -66,7 +63,6 @@ export default function CandidateSidebar() {
         })}
       </nav>
 
-      {/* Footer */}
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-700/50 backdrop-blur">
         <div className="text-xs text-slate-500 text-center hover:text-slate-400 transition-colors">
           © 2026 TalentFlow AI

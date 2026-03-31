@@ -5,7 +5,7 @@ import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase';
-import { FileText, Search, Filter, TrendingUp } from 'lucide-react';
+import { FileText, Search, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 
 type StatusFilter = 'all' | 'applied' | 'shortlisted' | 'interview' | 'rejected' | 'hired';
@@ -120,7 +120,6 @@ export default function ApplicationsPage() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Page Header */}
       <div className="flex justify-between items-start mb-8">
         <div className="animate-slideInLeft">
           <h1 className="text-4xl font-bold text-white">Applications</h1>
@@ -128,7 +127,6 @@ export default function ApplicationsPage() {
         </div>
       </div>
 
-      {/* Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         {Object.entries(statusCounts).map(([status, count], idx) => (
           <div
@@ -151,10 +149,8 @@ export default function ApplicationsPage() {
         ))}
       </div>
 
-      {/* Filters */}
       <Card>
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
-          {/* Search */}
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
             <input
@@ -166,7 +162,6 @@ export default function ApplicationsPage() {
             />
           </div>
 
-          {/* Status Filters */}
           <div className="flex gap-2 flex-wrap">
             <Button
               variant={filter === 'all' ? 'primary' : 'ghost'}
@@ -201,14 +196,13 @@ export default function ApplicationsPage() {
         </div>
       </Card>
 
-      {/* Score Sort Toggle */}
       <Card>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-400">Sort by AI Score:</span>
             <Button
               size="sm"
-              variant={sortByScore ? 'default' : 'ghost'}
+              variant={sortByScore ? 'primary' : 'ghost'}
               onClick={() => setSortByScore(!sortByScore)}
               className="flex items-center gap-2"
             >
@@ -222,7 +216,6 @@ export default function ApplicationsPage() {
         </div>
       </Card>
 
-      {/* Applications List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
@@ -255,12 +248,10 @@ export default function ApplicationsPage() {
             >
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                 <div className="flex items-start lg:items-center gap-4 flex-1 min-w-0">
-                  {/* Avatar */}
                   <div className="w-12 h-12 bg-[#FF7F00] rounded-full flex items-center justify-center text-white font-semibold shrink-0 group-hover:scale-110 transition-transform shadow-lg shadow-orange-900/30">
                     {app.candidates?.full_name?.charAt(0) || 'C'}
                   </div>
 
-                  {/* Candidate Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1 flex-wrap">
                       <h3 className="text-lg font-semibold text-white">
@@ -269,7 +260,7 @@ export default function ApplicationsPage() {
                       <Badge status={app.status as 'applied' | 'shortlisted' | 'interview' | 'rejected' | 'hired'} />
                       {app.ai_score ? (
                         <span className="px-2.5 py-1 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 text-yellow-200 rounded-lg text-xs font-semibold border border-yellow-500/20">
-                          ⭐ {app.ai_score}%
+                          {app.ai_score}%
                         </span>
                       ) : !scoringApplications.has(app.id) ? (
                         <button
@@ -313,7 +304,6 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
 
-                {/* Actions */}
                 <div className="flex gap-2 ml-auto lg:ml-4">
                   <Link href={`/candidates/${app.candidate_id}`}>
                     <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white">View Profile</Button>

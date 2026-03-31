@@ -1,11 +1,35 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// SERVER-SIDE ONLY: This module should only be imported in API routes
 const API_KEY = process.env.GEMINI_API_KEY || 'REDACTED_API_KEY';
 if (!process.env.GEMINI_API_KEY) {
-  console.warn('⚠️ GEMINI_API_KEY not found in environment variables, using hardcoded fallback');
+  console.warn('GEMINI_API_KEY not found, using hardcoded fallback');
 }
 const genAI = new GoogleGenerativeAI(API_KEY);
+
+function profileCompleteness(
+  education: string,
+  experienceYears: number,
+  skills: string
+): { filled: number; ceiling: number; isEmpty: boolean } {
+  let filled = 0;
+  if (education && education.trim() && education.trim().toLowerCase() !== 'not specified') filled++;
+  if (experienceYears > 0) filled++;
+  if (skills && skills.trim() && skills.trim().toLowerCase() !== 'not specified') filled++;
+  return {
+    filled,
+    ceiling: [0, 35, 65, 100][filled],
+    isEmpty: filled === 0,
+  };
+}
+
+function parseScore(text: string): number {
+  const cleaned = text.replace(/[^0-9]/g, '');
+  const score = parseInt(cleaned);
+  if (isNaN(score) || score < 0 || score > 100) {
+    throw new Error(`Invalid score from Gemini: "${text}"`);
+  }
+  return score;
+}
 
 export async function scoreResume(
   resumeText: string,
@@ -17,66 +41,69 @@ export async function scoreResume(
 ): Promise<number> {
   try {
     console.log('Scoring resume for:', candidateName);
-    console.log('API Key present:', API_KEY.substring(0, 10) + '...');
-    
+
+    const { filled, ceiling, isEmpty } = profileCompleteness(education, experienceYears, skills);
+
+    if (isEmpty) {
+      console.log('Empty profile, returning 0');
+      return 0;
+    }
+
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const prompt = `You are an ATS (Applicant Tracking System) scoring engine. Analyze this candidate profile and provide a numerical score.
+    const prompt = `<role>Strict ATS resume scoring engine. You score candidate profiles on a 0-100 scale.</role>
 
-**CANDIDATE DATA:**
-Name: ${candidateName}
-Education: ${education || 'Not specified'}
-Experience: ${experienceYears} years
-Skills: ${skills || 'Not specified'}
-Profile: ${resumeText}
-${jobRequirements ? `\n**JOB REQUIREMENTS:**\n${jobRequirements}\n\n**Match the candidate's profile against these job requirements.**` : ''}
+<examples>
+Input: Education: EMPTY | Experience: EMPTY | Skills: EMPTY
+Output: 0
 
-**SCORING SYSTEM (Total: 100 points):**
-1. Resume Quality (25 pts): Clarity, structure, completeness
-2. Skill Match (25 pts): ${jobRequirements ? 'How well skills align with job requirements' : 'Quality and relevance of skills'}
-3. Experience Level (25 pts): Years of experience and career progression
-4. Education Match (15 pts): Degree and educational background
-5. Overall Fit (10 pts): Professional presentation
+Input: Education: BSc Computer Science | Experience: EMPTY | Skills: EMPTY
+Output: 12
 
-**CRITICAL RULES:**
-- Output MUST be a single integer number between 0-100
-- NO text, NO explanations, NO punctuation
-- Just the number, for example: 75
-- Be realistic: average candidates score 60-70, excellent ones 80-90
-- Missing information should lower the score
+Input: Education: EMPTY | Experience: 2 years | Skills: Python, SQL
+Output: 28
 
-Your response (number only):`;
+Input: Education: BSc Computer Science | Experience: 3 years | Skills: Python, React, Node.js
+Output: 55
+
+Input: Education: MSc Computer Science | Experience: 6 years | Skills: Python, Java, AWS, Docker, Kubernetes, React, PostgreSQL
+Output: 78
+
+Input: Education: PhD Machine Learning, Stanford | Experience: 10 years | Skills: Python, TensorFlow, PyTorch, MLOps, AWS, GCP, Distributed Systems, Technical Leadership
+Output: 92
+</examples>
+
+<rules>
+- EMPTY or missing fields = 0 points for that category
+- NEVER assume or infer data that isn't provided
+- 1 field filled: max score 35
+- 2 fields filled: max score 65
+- All 3 filled: max score 100
+- Generic/vague skills like "good communication" score lower than technical skills
+${jobRequirements ? '- Score based on MATCH with job requirements, not just profile quality' : ''}
+</rules>
+
+<candidate>
+Education: ${education?.trim() || 'EMPTY'}
+Experience: ${experienceYears > 0 ? experienceYears + ' years' : 'EMPTY'}
+Skills: ${skills?.trim() || 'EMPTY'}
+</candidate>
+${jobRequirements ? `\n<job>\n${jobRequirements}\n</job>` : ''}
+Output ONLY a single integer 0-100:`;
 
     const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text().trim();
-    
-    console.log('🔍 Gemini response:', text);
-    
-    // Extract number from response - try multiple patterns
-    let score: number;
-    
-    // Try direct parseInt first
-    score = parseInt(text);
-    
-    // If that fails, extract any digits
-    if (isNaN(score)) {
-      const matches = text.match(/\d+/);
-      score = matches ? parseInt(matches[0]) : NaN;
-    }
-    
-    // Validate score is between 0-100
-    if (isNaN(score) || score < 0 || score > 100) {
-      console.error('❌ Invalid score received from Gemini:', text);
-      console.error('❌ Parsed as:', score);
-      throw new Error(`Invalid score: ${text}`);
-    }
-    
-    console.log('✅ Final score:', score);
+    const text = result.response.text().trim();
+    console.log('Gemini raw response:', text);
+
+    let score = parseScore(text);
+
+    score = Math.min(score, ceiling);
+
+    console.log(`Final score: ${score} (ceiling: ${ceiling}, filled: ${filled}/3)`);
     return score;
   } catch (error) {
-    console.error('❌ Error scoring resume with Gemini:', error);
-    throw error; // Re-throw instead of returning 50
+    console.error('Error scoring resume:', error);
+    throw error;
   }
 }
 
@@ -93,31 +120,21 @@ export async function scoreResumeForJob(
   minExperience: number
 ): Promise<number> {
   try {
-    console.log(`🎯 Scoring ${candidateName} for ${jobTitle}`);
-    
-    const jobRequirements = `
-POSITION: ${jobTitle}
-DESCRIPTION: ${jobDescription}
-REQUIRED SKILLS: ${requiredSkills}
-MINIMUM EXPERIENCE: ${minExperience} years
+    console.log(`Scoring ${candidateName} for ${jobTitle}`);
 
-Evaluate how well the candidate matches these specific job requirements.`;
+    const { isEmpty } = profileCompleteness(education, experienceYears, skills);
+    if (isEmpty) {
+      console.log('Empty profile, returning 0 for job match');
+      return 0;
+    }
 
-    // Build a comprehensive resume text from available data
-    const resumeText = `
-PROFESSIONAL PROFILE:
-${candidateName} is a professional with ${experienceYears} years of experience.
-
-EDUCATION: ${education || 'Not specified'}
-
-SKILLS & EXPERTISE:
-${skills || 'Not specified'}
-
-EXPERIENCE LEVEL: ${experienceYears} years
-`;
+    const jobRequirements = `Position: ${jobTitle}
+Description: ${jobDescription}
+Required Skills: ${requiredSkills}
+Min Experience: ${minExperience} years`;
 
     return await scoreResume(
-      resumeText,
+      '',
       candidateName,
       education,
       experienceYears,
@@ -125,7 +142,7 @@ EXPERIENCE LEVEL: ${experienceYears} years
       jobRequirements
     );
   } catch (error) {
-    console.error('❌ Error scoring resume for job:', error);
-    throw error; // Re-throw instead of returning default
+    console.error('Error scoring resume for job:', error);
+    throw error;
   }
 }

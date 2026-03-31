@@ -130,13 +130,11 @@ export default function CandidateApplicationsPage() {
 
       <main className="ml-64 pt-16 min-h-screen">
         <div className="p-6 relative z-10">
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">My Applications</h1>
             <p className="text-slate-400">Track the status of your job applications</p>
           </div>
 
-          {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
             <Card className="bg-slate-700/30">
               <p className="text-sm text-slate-400 mb-1">Total</p>
@@ -160,7 +158,6 @@ export default function CandidateApplicationsPage() {
             </Card>
           </div>
 
-          {/* Filters */}
           <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
             {['all', 'applied', 'shortlisted', 'interview', 'hired', 'rejected'].map((status) => (
               <Button
@@ -175,7 +172,6 @@ export default function CandidateApplicationsPage() {
             ))}
           </div>
 
-          {/* Applications List */}
           {!candidateData ? (
             <Card className="border-dashed border-2">
               <div className="text-center py-12">

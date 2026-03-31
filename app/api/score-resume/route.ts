@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Fetch candidate data
     const { data: candidate, error } = await supabase
       .from('candidates')
       .select('*')
@@ -27,16 +26,34 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Generate resume score
+    const hasEducation = !!candidate.education?.trim();
+    const hasSkills = !!candidate.skills?.trim();
+    const hasExperience = (candidate.experience_years || 0) > 0;
+
+    if (!hasEducation && !hasSkills && !hasExperience) {
+      const score = 0;
+      const { error: updateError } = await supabase
+        .from('candidates')
+        .update({ resume_score: score })
+        .eq('id', candidateId);
+      if (updateError) console.error('Error updating candidate score:', updateError);
+      return NextResponse.json({ score });
+    }
+
+    const resumeParts: string[] = [];
+    if (hasEducation) resumeParts.push(`Education: ${candidate.education}`);
+    if (hasExperience) resumeParts.push(`Experience: ${candidate.experience_years} years`);
+    if (hasSkills) resumeParts.push(`Skills: ${candidate.skills}`);
+    const resumeText = resumeParts.join('\n');
+
     const score = await scoreResume(
-      `Profile of ${candidate.full_name}. Professional with background in their field.`,
+      resumeText,
       candidate.full_name,
       candidate.education || '',
       candidate.experience_years || 0,
       candidate.skills || ''
     );
 
-    // Update candidate record with the score
     const { error: updateError } = await supabase
       .from('candidates')
       .update({ resume_score: score })

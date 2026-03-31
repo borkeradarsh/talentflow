@@ -51,7 +51,6 @@ export default function JobsPage() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
-      {/* Page Header */}
       <div className="flex justify-between items-start mb-8 animate-slideInLeft">
         <div>
           <h1 className="text-4xl font-bold text-white">Jobs</h1>
@@ -65,7 +64,6 @@ export default function JobsPage() {
         </Link>
       </div>
 
-      {/* Stats Overview */}
       <div className="grid grid-cols-3 gap-4">
         {Object.entries(statusCounts).map(([status, count], idx) => (
           <div
@@ -88,10 +86,8 @@ export default function JobsPage() {
         ))}
       </div>
 
-      {/* Filters */}
       <Card>
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
-          {/* Search */}
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
@@ -103,7 +99,6 @@ export default function JobsPage() {
             />
           </div>
 
-          {/* Status Filter */}
           <div className="flex gap-2 flex-wrap">
             <Button
               variant={filter === 'all' ? 'primary' : 'ghost'}
@@ -131,7 +126,6 @@ export default function JobsPage() {
         </div>
       </Card>
 
-      {/* Jobs List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <div className="text-center">

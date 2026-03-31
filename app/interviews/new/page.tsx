@@ -75,7 +75,6 @@ export default function NewInterviewPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <Link href="/interviews">
           <Button variant="ghost" size="sm">
@@ -89,10 +88,8 @@ export default function NewInterviewPage() {
         </div>
       </div>
 
-      {/* Form */}
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Candidate Selection */}
           <div>
             <label htmlFor="candidate_id" className="block text-sm font-medium text-gray-700 mb-2">
               Candidate *
@@ -114,7 +111,6 @@ export default function NewInterviewPage() {
             </select>
           </div>
 
-          {/* Job Selection */}
           <div>
             <label htmlFor="job_id" className="block text-sm font-medium text-gray-700 mb-2">
               Job Position *
@@ -136,7 +132,6 @@ export default function NewInterviewPage() {
             </select>
           </div>
 
-          {/* Start Time */}
           <div>
             <label htmlFor="start_time" className="block text-sm font-medium text-gray-700 mb-2">
               Start Time *
@@ -152,7 +147,6 @@ export default function NewInterviewPage() {
             />
           </div>
 
-          {/* End Time */}
           <div>
             <label htmlFor="end_time" className="block text-sm font-medium text-gray-700 mb-2">
               End Time *
@@ -168,7 +162,6 @@ export default function NewInterviewPage() {
             />
           </div>
 
-          {/* Google Event ID (Optional) */}
           <div>
             <label htmlFor="google_event_id" className="block text-sm font-medium text-gray-700 mb-2">
               Google Calendar Event ID (Optional)
@@ -187,7 +180,6 @@ export default function NewInterviewPage() {
             </p>
           </div>
 
-          {/* Submit Buttons */}
           <div className="flex justify-end gap-3 pt-4">
             <Link href="/interviews">
               <Button type="button" variant="secondary">
@@ -202,7 +194,6 @@ export default function NewInterviewPage() {
         </form>
       </Card>
 
-      {/* Info Box */}
       <Card className="bg-blue-50 border-blue-200">
         <div className="flex gap-3">
           <CalendarIcon className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />

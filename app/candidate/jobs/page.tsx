@@ -69,13 +69,11 @@ export default function CandidateJobsPage() {
 
       <main className="ml-64 pt-16 min-h-screen">
         <div className="p-6 relative z-10">
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Browse Jobs</h1>
             <p className="text-slate-400">Find your next career opportunity</p>
           </div>
 
-          {/* Search Bar */}
           <Card className="mb-6">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -89,14 +87,12 @@ export default function CandidateJobsPage() {
             </div>
           </Card>
 
-          {/* Jobs Count */}
           <div className="flex items-center justify-between mb-6">
             <p className="text-slate-400">
               {filteredJobs.length} {filteredJobs.length === 1 ? 'position' : 'positions'} available
             </p>
           </div>
 
-          {/* Jobs Grid */}
           {filteredJobs.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {filteredJobs.map((job) => (

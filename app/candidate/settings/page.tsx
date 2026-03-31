@@ -19,14 +19,12 @@ export default function CandidateSettingsPage() {
 
       <main className="ml-64 pt-16 min-h-screen">
         <div className="p-6 relative z-10">
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Settings</h1>
             <p className="text-slate-400">Manage your account preferences</p>
           </div>
 
           <div className="max-w-4xl space-y-6">
-            {/* Account Settings */}
             <Card>
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <User className="w-5 h-5" />
@@ -49,7 +47,6 @@ export default function CandidateSettingsPage() {
               </div>
             </Card>
 
-            {/* Notification Settings */}
             <Card>
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <Bell className="w-5 h-5" />
@@ -89,7 +86,6 @@ export default function CandidateSettingsPage() {
               </div>
             </Card>
 
-            {/* Privacy Settings */}
             <Card>
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                 <Lock className="w-5 h-5" />
@@ -115,7 +111,6 @@ export default function CandidateSettingsPage() {
               </div>
             </Card>
 
-            {/* Danger Zone */}
             <Card className="border-red-500/30 bg-red-500/5">
               <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-red-400">
                 <Trash2 className="w-5 h-5" />

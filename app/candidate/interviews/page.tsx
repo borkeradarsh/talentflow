@@ -103,7 +103,6 @@ export default function CandidateInterviewsPage() {
 
       <main className="ml-64 pt-16 min-h-screen">
         <div className="p-6 relative z-10">
-          {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">My Interviews</h1>
             <p className="text-slate-400">View and manage your scheduled interviews</p>
@@ -122,7 +121,6 @@ export default function CandidateInterviewsPage() {
             </Card>
           ) : (
             <div className="space-y-8">
-              {/* Upcoming Interviews */}
               <div>
                 <h2 className="text-2xl font-bold mb-4">Upcoming Interviews</h2>
                 {upcomingInterviews.length > 0 ? (
@@ -182,7 +180,6 @@ export default function CandidateInterviewsPage() {
                 )}
               </div>
 
-              {/* Past Interviews */}
               {pastInterviews.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-4">Past Interviews</h2>
