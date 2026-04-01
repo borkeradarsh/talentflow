@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Brain, Zap, Users, BarChart3, Sparkles, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Brain, Zap, Users, BarChart3, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Button from '@/components/ui/Button';
 

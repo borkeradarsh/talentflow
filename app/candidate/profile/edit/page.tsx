@@ -36,6 +36,23 @@ export default function CandidateProfileEditPage() {
     resume_url: ''
   });
 
+  const triggerResumeRescore = async (candidateId: string) => {
+    try {
+      const response = await fetch('/api/score-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ candidateId }),
+      });
+
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        console.error('Automatic resume rescoring failed:', payload?.error || response.statusText);
+      }
+    } catch (error) {
+      console.error('Automatic resume rescoring request failed:', error);
+    }
+  };
+
   const fetchCandidateData = useCallback(async () => {
     try {
       const { data, error } = await supabase
@@ -87,32 +104,50 @@ export default function CandidateProfileEditPage() {
 
     try {
       if (candidateData) {
+        const resumeUrlChanged = (formData.resume_url || '') !== (candidateData.resume_url || '');
+
         // Update existing candidate
+        const updatePayload: Record<string, unknown> = {
+          ...formData,
+          updated_at: new Date().toISOString()
+        };
+
+        if (resumeUrlChanged) {
+          updatePayload.resume_score = null;
+        }
+
         const { error } = await supabase
           .from('candidates')
-          .update({
-            ...formData,
-            updated_at: new Date().toISOString()
-          })
+          .update(updatePayload)
           .eq('id', candidateData.id);
 
         if (error) {
           console.error('Error updating candidate profile:', error);
           throw error;
         }
+
+        if (resumeUrlChanged && formData.resume_url) {
+          await triggerResumeRescore(candidateData.id);
+        }
       } else {
         // Create new candidate
-        const { error } = await supabase
+        const { data: createdCandidate, error } = await supabase
           .from('candidates')
           .insert([{
             ...formData,
             email: user?.email,
             created_at: new Date().toISOString()
-          }]);
+          }])
+          .select('id')
+          .single();
 
         if (error) {
           console.error('Error creating candidate profile:', error);
           throw error;
+        }
+
+        if (createdCandidate?.id && formData.resume_url) {
+          await triggerResumeRescore(createdCandidate.id);
         }
       }
 

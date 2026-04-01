@@ -34,7 +34,7 @@ export default function ApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<StatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortByScore, setSortByScore] = useState(false);
+  const [sortByScore, setSortByScore] = useState(true);
   const [scoringApplications, setScoringApplications] = useState<Set<string>>(new Set());
 
   const scoreApplication = async (applicationId: string) => {
@@ -72,17 +72,13 @@ export default function ApplicationsPage() {
   const fetchApplications = useCallback(async () => {
     setLoading(true);
     try {
-      let query = supabase
+      const query = supabase
         .from('applications')
         .select(`
           *,
           candidates (full_name, email, skills, experience_years),
           jobs (title, status)
         `);
-
-      if (filter !== 'all') {
-        query = query.eq('status', filter);
-      }
 
       const { data, error } = await query.order('applied_at', { ascending: false });
 
@@ -93,20 +89,35 @@ export default function ApplicationsPage() {
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  }, []);
 
   useEffect(() => {
     fetchApplications();
   }, [fetchApplications]);
 
-  const filteredApplications = applications.filter(app =>
+  const statusFilteredApplications = filter === 'all'
+    ? applications
+    : applications.filter(app => app.status === filter);
+
+  const filteredApplications = statusFilteredApplications.filter(app =>
     app.candidates?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     app.jobs?.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Sort by AI score if enabled
   const sortedApplications = sortByScore 
-    ? [...filteredApplications].sort((a, b) => (b.ai_score || 0) - (a.ai_score || 0))
+    ? [...filteredApplications].sort((a, b) => {
+        const aHasScore = a.ai_score !== null && a.ai_score !== undefined;
+        const bHasScore = b.ai_score !== null && b.ai_score !== undefined;
+
+        if (aHasScore && bHasScore) {
+          return (b.ai_score as number) - (a.ai_score as number);
+        }
+        if (aHasScore) return -1;
+        if (bHasScore) return 1;
+
+        return new Date(b.applied_at).getTime() - new Date(a.applied_at).getTime();
+      })
     : filteredApplications;
 
   const statusCounts = {
@@ -211,7 +222,7 @@ export default function ApplicationsPage() {
             </Button>
           </div>
           <p className="text-xs text-gray-500">
-            {sortedApplications.filter(a => a.ai_score).length} of {sortedApplications.length} scored
+            {sortedApplications.filter(a => a.ai_score !== null && a.ai_score !== undefined).length} of {sortedApplications.length} scored
           </p>
         </div>
       </Card>
@@ -258,7 +269,7 @@ export default function ApplicationsPage() {
                         {app.candidates?.full_name || 'Unknown Candidate'}
                       </h3>
                       <Badge status={app.status as 'applied' | 'shortlisted' | 'interview' | 'rejected' | 'hired'} />
-                      {app.ai_score ? (
+                      {app.ai_score !== null && app.ai_score !== undefined ? (
                         <span className="px-2.5 py-1 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 text-yellow-200 rounded-lg text-xs font-semibold border border-yellow-500/20">
                           {app.ai_score}%
                         </span>

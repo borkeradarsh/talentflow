@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -9,32 +9,62 @@ import { Calendar, Plus, Search, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 type StatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled';
+const IST_TIME_ZONE = 'Asia/Kolkata';
+
+function formatIstDate(value: string) {
+  return new Date(value).toLocaleDateString('en-IN', {
+    timeZone: IST_TIME_ZONE,
+  });
+}
+
+function formatIstTime(value: string) {
+  return new Date(value).toLocaleTimeString('en-IN', {
+    timeZone: IST_TIME_ZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
 
 export default function InterviewsPage() {
   const [interviews, setInterviews] = useState<(Interview & { candidates?: { full_name: string; email: string }; jobs?: { title: string } })[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<StatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [reviewingInterviewId, setReviewingInterviewId] = useState<string | null>(null);
+  const [reviewRating, setReviewRating] = useState<number>(4);
+  const [reviewFeedback, setReviewFeedback] = useState('');
+  const [savingReview, setSavingReview] = useState(false);
 
-  useEffect(() => {
-    fetchInterviews();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]);
+  const syncCompletedInterviews = useCallback(async () => {
+    try {
+      const nowIso = new Date().toISOString();
+      const { error } = await supabase
+        .from('interviews')
+        .update({ status: 'completed' })
+        .eq('status', 'scheduled')
+        .lt('end_time', nowIso);
 
-  async function fetchInterviews() {
+      if (error) {
+        console.error('Error auto-completing interviews:', error);
+      }
+    } catch (error) {
+      console.error('Error in interview auto-complete sync:', error);
+    }
+  }, []);
+
+  const fetchInterviews = useCallback(async () => {
     setLoading(true);
     try {
-      let query = supabase
+      await syncCompletedInterviews();
+
+      const query = supabase
         .from('interviews')
         .select(`
           *,
           candidates (full_name, email),
           jobs (title)
         `);
-
-      if (filter !== 'all') {
-        query = query.eq('status', filter);
-      }
 
       const { data, error } = await query.order('start_time', { ascending: true });
 
@@ -45,9 +75,71 @@ export default function InterviewsPage() {
     } finally {
       setLoading(false);
     }
+  }, [syncCompletedInterviews]);
+
+  useEffect(() => {
+    fetchInterviews();
+    const timer = window.setInterval(() => {
+      fetchInterviews();
+    }, 60000);
+
+    return () => window.clearInterval(timer);
+  }, [fetchInterviews]);
+
+  function openReviewEditor(interview: Interview) {
+    setReviewingInterviewId(interview.id);
+    setReviewRating(interview.recruiter_rating ?? 4);
+    setReviewFeedback(interview.recruiter_feedback ?? '');
   }
 
-  const filteredInterviews = interviews.filter(interview =>
+  function closeReviewEditor() {
+    setReviewingInterviewId(null);
+    setReviewRating(4);
+    setReviewFeedback('');
+  }
+
+  async function saveReview(interviewId: string) {
+    setSavingReview(true);
+    try {
+      const payload = {
+        recruiter_rating: reviewRating,
+        recruiter_feedback: reviewFeedback.trim() || null,
+        reviewed_at: new Date().toISOString(),
+        status: 'completed' as const,
+      };
+
+      const { error } = await supabase
+        .from('interviews')
+        .update(payload)
+        .eq('id', interviewId);
+
+      if (error) throw error;
+
+      setInterviews((prev) =>
+        prev.map((item) =>
+          item.id === interviewId
+            ? {
+                ...item,
+                ...payload,
+              }
+            : item
+        )
+      );
+
+      closeReviewEditor();
+    } catch (error) {
+      console.error('Error saving interview review:', error);
+      alert('Failed to save review. Please make sure review columns are added in the database.');
+    } finally {
+      setSavingReview(false);
+    }
+  }
+
+  const statusFilteredInterviews = filter === 'all'
+    ? interviews
+    : interviews.filter(interview => interview.status === filter);
+
+  const filteredInterviews = statusFilteredInterviews.filter(interview =>
     interview.candidates?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     interview.jobs?.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -203,18 +295,12 @@ export default function InterviewsPage() {
                           <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 group-hover:text-slate-300 transition-colors">
                             <div className="flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
-                              <span>{new Date(interview.start_time).toLocaleDateString()}</span>
+                              <span>{formatIstDate(interview.start_time)}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Clock className="w-4 h-4" />
                               <span>
-                                {new Date(interview.start_time).toLocaleTimeString([], { 
-                                  hour: '2-digit', 
-                                  minute: '2-digit' 
-                                })} - {new Date(interview.end_time).toLocaleTimeString([], { 
-                                  hour: '2-digit', 
-                                  minute: '2-digit' 
-                                })}
+                                {formatIstTime(interview.start_time)} - {formatIstTime(interview.end_time)} IST
                               </span>
                             </div>
                           </div>
@@ -256,12 +342,9 @@ export default function InterviewsPage() {
                           </p>
                           
                           <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 group-hover:text-slate-400 transition-colors">
-                            <span>{new Date(interview.start_time).toLocaleDateString()}</span>
+                            <span>{formatIstDate(interview.start_time)}</span>
                             <span>
-                              {new Date(interview.start_time).toLocaleTimeString([], { 
-                                hour: '2-digit', 
-                                minute: '2-digit' 
-                              })}
+                              {formatIstTime(interview.start_time)} IST
                             </span>
                           </div>
                         </div>
@@ -269,6 +352,60 @@ export default function InterviewsPage() {
 
                       <Badge status={interview.status as 'scheduled' | 'completed' | 'cancelled'} />
                     </div>
+
+                    {interview.status === 'completed' && (
+                      <div className="mt-4 border-t border-slate-700 pt-4">
+                        {reviewingInterviewId === interview.id ? (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <label className="text-sm text-slate-300">Rating</label>
+                              <select
+                                value={reviewRating}
+                                onChange={(e) => setReviewRating(Number(e.target.value))}
+                                className="bg-slate-800 border border-slate-600 rounded px-3 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
+                                <option value={1}>1 - Poor</option>
+                                <option value={2}>2 - Fair</option>
+                                <option value={3}>3 - Good</option>
+                                <option value={4}>4 - Very Good</option>
+                                <option value={5}>5 - Excellent</option>
+                              </select>
+                            </div>
+
+                            <textarea
+                              value={reviewFeedback}
+                              onChange={(e) => setReviewFeedback(e.target.value)}
+                              placeholder="Add recruiter review notes..."
+                              rows={3}
+                              className="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+
+                            <div className="flex gap-2">
+                              <Button size="sm" onClick={() => saveReview(interview.id)} disabled={savingReview}>
+                                {savingReview ? 'Saving...' : 'Save Review'}
+                              </Button>
+                              <Button size="sm" variant="ghost" onClick={closeReviewEditor}>
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            {interview.recruiter_rating ? (
+                              <p className="text-sm text-slate-300">Rating: {interview.recruiter_rating}/5</p>
+                            ) : (
+                              <p className="text-sm text-slate-500">No review submitted yet</p>
+                            )}
+                            {interview.recruiter_feedback && (
+                              <p className="text-sm text-slate-400">{interview.recruiter_feedback}</p>
+                            )}
+                            <Button size="sm" variant="ghost" onClick={() => openReviewEditor(interview)}>
+                              {interview.recruiter_rating || interview.recruiter_feedback ? 'Edit Review' : 'Add Review'}
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </Card>
                 ))}
               </div>

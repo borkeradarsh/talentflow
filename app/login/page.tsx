@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { getRecruiterEmailPolicyMessage, isAllowedRecruiterEmail } from '@/lib/emailPolicy';
 import Button from '@/components/ui/Button';
 import { Brain, Mail, Lock, AlertCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -40,6 +41,12 @@ export default function LoginPage() {
         if (userError) {
           console.error('Error fetching user role:', userError);
           setError('Failed to fetch user information');
+          return;
+        }
+
+        if (userData?.role === 'recruiter' && !isAllowedRecruiterEmail(formData.email)) {
+          await supabase.auth.signOut();
+          setError(getRecruiterEmailPolicyMessage());
           return;
         }
 

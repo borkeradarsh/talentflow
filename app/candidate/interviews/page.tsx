@@ -11,6 +11,33 @@ import CandidateSidebar from '@/components/layout/CandidateSidebar';
 import CandidateHeader from '@/components/layout/CandidateHeader';
 import { Calendar, Clock, Video } from 'lucide-react';
 
+const IST_TIME_ZONE = 'Asia/Kolkata';
+
+function formatIstDate(value: string) {
+  return new Date(value).toLocaleDateString('en-IN', {
+    timeZone: IST_TIME_ZONE,
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function formatIstShortDate(value: string) {
+  return new Date(value).toLocaleDateString('en-IN', {
+    timeZone: IST_TIME_ZONE,
+  });
+}
+
+function formatIstTime(value: string) {
+  return new Date(value).toLocaleTimeString('en-IN', {
+    timeZone: IST_TIME_ZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
 export default function CandidateInterviewsPage() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -139,24 +166,13 @@ export default function CandidateInterviewsPage() {
                           <div className="flex items-center gap-2 text-slate-300">
                             <Clock className="w-4 h-4 text-blue-400" />
                             <span>
-                              {new Date(interview.start_time).toLocaleDateString('en-US', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
+                              {formatIstDate(interview.start_time)}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 text-slate-300">
                             <Clock className="w-4 h-4 text-blue-400" />
                             <span>
-                              {new Date(interview.start_time).toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })} - {new Date(interview.end_time).toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
+                              {formatIstTime(interview.start_time)} - {formatIstTime(interview.end_time)} IST
                             </span>
                           </div>
                         </div>
@@ -195,14 +211,11 @@ export default function CandidateInterviewsPage() {
                             <div className="flex items-center gap-4 text-sm text-slate-400">
                               <span className="flex items-center gap-1">
                                 <Calendar className="w-4 h-4" />
-                                {new Date(interview.start_time).toLocaleDateString()}
+                                {formatIstShortDate(interview.start_time)}
                               </span>
                               <span className="flex items-center gap-1">
                                 <Clock className="w-4 h-4" />
-                                {new Date(interview.start_time).toLocaleTimeString('en-US', {
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
+                                {formatIstTime(interview.start_time)} IST
                               </span>
                             </div>
                           </div>

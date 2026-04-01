@@ -16,16 +16,12 @@ export default function JobsPage() {
 
   useEffect(() => {
     fetchJobs();
-  }, [filter]);
+  }, []);
 
   async function fetchJobs() {
     setLoading(true);
     try {
-      let query = supabase.from('jobs').select('*');
-      
-      if (filter !== 'all') {
-        query = query.eq('status', filter);
-      }
+      const query = supabase.from('jobs').select('*');
       
       const { data, error } = await query.order('created_at', { ascending: false });
       
@@ -38,7 +34,11 @@ export default function JobsPage() {
     }
   }
 
-  const filteredJobs = jobs.filter(job =>
+  const statusFilteredJobs = filter === 'all'
+    ? jobs
+    : jobs.filter(job => job.status === filter);
+
+  const filteredJobs = statusFilteredJobs.filter(job =>
     job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     job.description.toLowerCase().includes(searchQuery.toLowerCase())
   );

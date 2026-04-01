@@ -54,4 +54,7 @@ export type Interview = {
   end_time: string;
   google_event_id: string;
   status: 'scheduled' | 'completed' | 'cancelled';
+  recruiter_rating?: number | null;
+  recruiter_feedback?: string | null;
+  reviewed_at?: string | null;
 };

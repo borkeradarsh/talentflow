@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { getRecruiterEmailPolicyMessage, isAllowedRecruiterEmail } from '@/lib/emailPolicy';
 import Button from '@/components/ui/Button';
 import { Brain, Mail, Lock, User, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -35,6 +36,12 @@ export default function SignUpPage() {
 
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.role === 'recruiter' && !isAllowedRecruiterEmail(formData.email)) {
+      setError(getRecruiterEmailPolicyMessage());
       setLoading(false);
       return;
     }
@@ -162,6 +169,11 @@ export default function SignUpPage() {
                     className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder:text-slate-500 text-white transition-all"
                   />
                 </div>
+                {formData.role === 'recruiter' && (
+                  <p className="text-xs text-slate-400 mt-1">
+                    Recruiter accounts must use an @bridgebeam.com email address.
+                  </p>
+                )}
               </div>
 
               {/* Password Field */}

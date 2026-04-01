@@ -47,7 +47,25 @@ export default function JobDetailPage() {
         .order('applied_at', { ascending: false });
 
       if (appsError) throw appsError;
-      setApplications(appsData || []);
+
+      const sortedByBestScore = [...(appsData || [])].sort((a, b) => {
+        const aHasScore = a.ai_score !== null && a.ai_score !== undefined;
+        const bHasScore = b.ai_score !== null && b.ai_score !== undefined;
+
+        if (aHasScore && bHasScore) {
+          if (a.ai_score !== b.ai_score) {
+            return (b.ai_score as number) - (a.ai_score as number);
+          }
+        } else if (aHasScore) {
+          return -1;
+        } else if (bHasScore) {
+          return 1;
+        }
+
+        return new Date(b.applied_at).getTime() - new Date(a.applied_at).getTime();
+      });
+
+      setApplications(sortedByBestScore);
     } catch (error) {
       console.error('Error fetching job details:', error);
     } finally {

@@ -8,6 +8,30 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, Calendar as CalendarIcon } from 'lucide-react';
 import Link from 'next/link';
 
+const IST_OFFSET_MINUTES = 330;
+
+function parseIstDateTimeToUtcIso(value: string): string {
+  const [datePart, timePart] = value.split('T');
+  const [year, month, day] = datePart.split('-').map(Number);
+  const [hour, minute] = timePart.split(':').map(Number);
+
+  const utcMs = Date.UTC(year, month - 1, day, hour, minute) - (IST_OFFSET_MINUTES * 60 * 1000);
+  return new Date(utcMs).toISOString();
+}
+
+function getCurrentIstDateTimeLocalValue(date: Date = new Date()): string {
+  const istMs = date.getTime() + IST_OFFSET_MINUTES * 60 * 1000;
+  const istDate = new Date(istMs);
+
+  const year = istDate.getUTCFullYear();
+  const month = String(istDate.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(istDate.getUTCDate()).padStart(2, '0');
+  const hours = String(istDate.getUTCHours()).padStart(2, '0');
+  const minutes = String(istDate.getUTCMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 export default function NewInterviewPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -15,6 +39,7 @@ export default function NewInterviewPage() {
   const [loading, setLoading] = useState(false);
   const [candidates, setCandidates] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
+  const [minStartTime, setMinStartTime] = useState('');
   
   const [formData, setFormData] = useState({
     candidate_id: searchParams.get('candidateId') || '',
@@ -27,6 +52,13 @@ export default function NewInterviewPage() {
 
   useEffect(() => {
     fetchCandidatesAndJobs();
+    setMinStartTime(getCurrentIstDateTimeLocalValue());
+
+    const timer = window.setInterval(() => {
+      setMinStartTime(getCurrentIstDateTimeLocalValue());
+    }, 30000);
+
+    return () => window.clearInterval(timer);
   }, []);
 
   async function fetchCandidatesAndJobs() {
@@ -48,14 +80,29 @@ export default function NewInterviewPage() {
     setLoading(true);
 
     try {
-      // Validate times
-      if (new Date(formData.start_time) >= new Date(formData.end_time)) {
+      const startUtcIso = parseIstDateTimeToUtcIso(formData.start_time);
+      const endUtcIso = parseIstDateTimeToUtcIso(formData.end_time);
+
+      // Validate time window and prevent scheduling in the past.
+      if (new Date(startUtcIso) <= new Date()) {
+        alert('Start time must be in the future (IST).');
+        setLoading(false);
+        return;
+      }
+
+      if (new Date(startUtcIso) >= new Date(endUtcIso)) {
         alert('End time must be after start time');
         setLoading(false);
         return;
       }
 
-      const { error } = await supabase.from('interviews').insert([formData]);
+      const payload = {
+        ...formData,
+        start_time: startUtcIso,
+        end_time: endUtcIso,
+      };
+
+      const { error } = await supabase.from('interviews').insert([payload]);
 
       if (error) throw error;
 
@@ -141,10 +188,12 @@ export default function NewInterviewPage() {
               id="start_time"
               name="start_time"
               required
+              min={minStartTime}
               value={formData.start_time}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <p className="text-sm text-gray-500 mt-1">All interview times are in IST.</p>
           </div>
 
           <div>
@@ -156,6 +205,7 @@ export default function NewInterviewPage() {
               id="end_time"
               name="end_time"
               required
+              min={formData.start_time || minStartTime}
               value={formData.end_time}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

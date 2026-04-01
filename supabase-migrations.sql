@@ -16,3 +16,15 @@ CREATE INDEX IF NOT EXISTS idx_applications_ai_score ON applications(ai_score);
 -- Add comments for documentation
 COMMENT ON COLUMN candidates.resume_score IS 'AI-generated ATS resume score (0-100)';
 COMMENT ON COLUMN applications.ai_score IS 'AI-generated job-specific match score (0-100)';
+
+-- Add recruiter review fields to interviews table
+ALTER TABLE interviews
+ADD COLUMN IF NOT EXISTS recruiter_rating INTEGER CHECK (recruiter_rating >= 1 AND recruiter_rating <= 5),
+ADD COLUMN IF NOT EXISTS recruiter_feedback TEXT,
+ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMPTZ;
+
+CREATE INDEX IF NOT EXISTS idx_interviews_reviewed_at ON interviews(reviewed_at);
+
+COMMENT ON COLUMN interviews.recruiter_rating IS 'Recruiter rating for completed interview (1-5)';
+COMMENT ON COLUMN interviews.recruiter_feedback IS 'Recruiter feedback notes for completed interview';
+COMMENT ON COLUMN interviews.reviewed_at IS 'Timestamp when recruiter review was submitted';

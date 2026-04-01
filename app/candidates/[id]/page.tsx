@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -8,6 +8,23 @@ import Button from '@/components/ui/Button';
 import { supabase, Candidate, Application, Interview } from '@/lib/supabase';
 import { ArrowLeft, Mail, Phone, GraduationCap, Briefcase, Calendar, FileText } from 'lucide-react';
 import Link from 'next/link';
+
+const IST_TIME_ZONE = 'Asia/Kolkata';
+
+function formatIstDateTime(value: string) {
+  return new Date(value).toLocaleString('en-IN', {
+    timeZone: IST_TIME_ZONE,
+  });
+}
+
+function formatIstTime(value: string) {
+  return new Date(value).toLocaleTimeString('en-IN', {
+    timeZone: IST_TIME_ZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
 
 export default function CandidateDetailPage() {
   const params = useParams();
@@ -19,6 +36,7 @@ export default function CandidateDetailPage() {
   const [loading, setLoading] = useState(true);
   const [resumeScore, setResumeScore] = useState<number | null>(null);
   const [scoringResume, setScoringResume] = useState(false);
+  const hasTriggeredAutoScoreRef = useRef(false);
 
   useEffect(() => {
     if (candidateId) {
@@ -39,10 +57,17 @@ export default function CandidateDetailPage() {
       if (candidateError) throw candidateError;
       setCandidate(candidateData);
       
-      if (candidateData?.resume_score) {
+      if (candidateData?.resume_score !== null && candidateData?.resume_score !== undefined) {
         setResumeScore(candidateData.resume_score);
-      } else if (candidateData?.id) {
-        // Score resume if not already scored
+      }
+
+      if (
+        candidateData?.id &&
+        !hasTriggeredAutoScoreRef.current &&
+        (candidateData?.resume_score === null || candidateData?.resume_score === undefined)
+      ) {
+        // Trigger automatic scoring once per page load when no score exists.
+        hasTriggeredAutoScoreRef.current = true;
         scoreResume(candidateData.id);
       }
 
@@ -79,6 +104,8 @@ export default function CandidateDetailPage() {
   }
 
   async function scoreResume(candidateId: string) {
+    if (scoringResume) return;
+
     setScoringResume(true);
     try {
       const response = await fetch('/api/score-resume', {
@@ -211,14 +238,22 @@ export default function CandidateDetailPage() {
         </Card>
 
         <Card title="AI Resume Score" className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/30">
-          <div className="flex items-start gap-3">
-            <div className="w-5 h-5 mt-1 text-yellow-500"></div>
+          <div className="flex items-start justify-between gap-3">
             <div>
               <p className="font-bold text-2xl text-yellow-500">
-                {scoringResume ? 'Calculating...' : resumeScore ? `${resumeScore}%` : 'N/A'}
+                {scoringResume ? 'Calculating...' : resumeScore !== null && resumeScore !== undefined ? `${resumeScore}%` : 'N/A'}
               </p>
               <p className="text-xs text-gray-400 mt-1">ATS Score</p>
             </div>
+
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => scoreResume(candidate.id)}
+              disabled={scoringResume}
+            >
+              {scoringResume ? 'Refreshing...' : 'Recalculate'}
+            </Button>
           </div>
         </Card>
       </div>
@@ -285,7 +320,7 @@ export default function CandidateDetailPage() {
                 <div>
                   <p className="font-medium">{interview.jobs?.title}</p>
                   <p className="text-sm text">
-                    {new Date(interview.start_time).toLocaleString()} - {new Date(interview.end_time).toLocaleTimeString()}
+                    {formatIstDateTime(interview.start_time)} - {formatIstTime(interview.end_time)} IST
                   </p>
                 </div>
                 <Badge status={interview.status} />
